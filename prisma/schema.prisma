@@ -14,7 +14,6 @@ model User {
   password String
   Review   Review[]
   Comment  Comment[]
-  Image    Image[]
 }
 
 model Admin {
@@ -23,7 +22,6 @@ model Admin {
   email    String    @unique
   password String
   Comment  Comment[]
-  Image    Image[]
 }
 
 model Review {
@@ -47,7 +45,6 @@ model Review {
   User           User?            @relation(fields: [userUser_id], references: [user_id])
   userUser_id    Int?
   Comment        Comment[]
-  Image          Image[]
   EvaluationItem EvaluationItem[]
 }
 
@@ -66,20 +63,6 @@ model Comment {
   admin              Admin?    @relation(fields: [admin_id], references: [admin_id], onDelete: SetNull)
 }
 
-model Image {
-  image_id           Int       @id @default(autoincrement())
-  review_id          Int?
-  user_id            Int?
-  admin_id           Int?
-  image_url          String
-  uploaded_at        DateTime  @default(now())
-  is_exposed         Boolean   @default(true)
-  admin_processed_at DateTime?
-  updated_at         DateTime  @updatedAt
-  review             Review?   @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
-  user               User?     @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
-  admin              Admin?    @relation(fields: [admin_id], references: [admin_id], onDelete: SetNull)
-}
 
 model EvaluationItem {
   item_id       Int     @id @default(autoincrement())

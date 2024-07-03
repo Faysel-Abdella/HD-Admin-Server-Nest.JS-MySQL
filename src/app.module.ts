@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guards/jwt.guad';
 import { UsersModule } from './users/users.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     JwtModule,
     UsersModule,
     ReviewsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
