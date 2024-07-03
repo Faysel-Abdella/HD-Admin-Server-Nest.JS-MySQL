@@ -11,7 +11,10 @@ export class ReviewsService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async create(photos: Express.Multer.File[]) {
+  async create(
+    createReviewDto: CreateReviewDto,
+    photos: Express.Multer.File[],
+  ) {
     let uploadedPhotos;
 
     if (photos && photos.length > 0) {
@@ -21,16 +24,28 @@ export class ReviewsService {
           console.log(photoUrl);
           return { url: photoUrl };
         }),
-      );
+      ).then(async (photos) => {
+        const review = await this.prisma.review.create({
+          data: {
+            user_id: createReviewDto.user_id,
+            address: createReviewDto.address,
+            sigungu: createReviewDto.sigungu,
+            detailed_address: createReviewDto.detailed_address,
+            residence_year: createReviewDto.residence_year,
+            comprehensive_opinion: createReviewDto.comprehensive_opinion,
+            rating: createReviewDto.rating,
+            usage_fee: createReviewDto.usage_fee,
+            residence_proof_document: createReviewDto.residence_proof_document,
+            is_exposed: createReviewDto.is_exposed,
+            view_count: createReviewDto.view_count,
+            registration_date: new Date(),
+            status: createReviewDto.status,
+            photos: { photosUrl: photos },
+          },
+        });
+        return review;
+      });
     }
-
-    const review = await this.prisma.review.create({
-      data: {
-        photos: { create: uploadedPhotos },
-      },
-    });
-
-    return review;
   }
 
   findAll() {

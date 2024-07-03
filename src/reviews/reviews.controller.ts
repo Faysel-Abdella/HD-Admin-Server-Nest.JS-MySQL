@@ -20,8 +20,9 @@ export class ReviewsController {
 
   @Post()
   @UseInterceptors(FilesInterceptor('photos', 10))
-  create(@UploadedFiles() photos) {
-    return this.reviewsService.create(photos);
+  create(@Body() createReviewDto: CreateReviewDto, @UploadedFiles() photos) {
+    console.log('PHTOS', photos, 'createReviewDto', createReviewDto);
+    return this.reviewsService.create(createReviewDto, photos);
   }
 
   @Get()

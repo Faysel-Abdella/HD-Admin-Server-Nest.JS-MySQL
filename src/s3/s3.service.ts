@@ -15,7 +15,7 @@ export class S3Service {
   }
 
   async uploadPhotoToS3(photo: Express.Multer.File): Promise<string> {
-    const key = `photos/${uuidv4()}-${photo.originalname}`;
+    const key = `photos/${uuidv4()}-image.jpg`;
 
     const params: S3.PutObjectRequest = {
       Bucket: 'hd-admin-bucket',
@@ -26,6 +26,6 @@ export class S3Service {
 
     await this.s3.upload(params).promise();
 
-    return key;
+    return `https://hd-admin-bucket.s3.amazonaws.com/${key}`;
   }
 }

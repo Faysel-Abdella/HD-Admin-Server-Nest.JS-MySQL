@@ -12,8 +12,17 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(email: LoginDto['email'], password: LoginDto['password']) {
     const user = await this.authService.userLogin({ email, password });
-    const admin = await this.authService.adminLogin({ email, password });
-    if (!user && !admin) throw new HttpException('Invalid credentials', 403);
-    return user;
+    if (user) {
+      return user;
+    }
+    if (!user) {
+      const admin = await this.authService.adminLogin({ email, password });
+      if (!admin) {
+        throw new HttpException('Invalid credentials', 403);
+      }
+      return admin;
+    }
+
+    throw new HttpException('Invalid credentials', 403);
   }
 }
