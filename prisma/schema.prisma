@@ -27,26 +27,15 @@ model Admin {
 }
 
 model Review {
-  review_id                Int              @id @default(autoincrement())
-  user_id                  Int?
-  address                  String
-  sigungu                  String
-  detailed_address         String?
-  residence_year           Int?
-  comprehensive_opinion    String?
-  photos                   Json?
-  residence_proof_document String?
-  rating                   Float?
-  usage_fee                Decimal?         @default(0) @db.Decimal(10, 2)
-  view_count               Int              @default(0)
-  status                   Status           @default(DRAFT)
-  is_exposed               Boolean          @default(true)
-  registration_date        DateTime         @default(now())
-  evaluation_items         Json?
-  user                     User?            @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
-  comments                 Comment[]
-  Image                    Image[]
-  EvaluationItem           EvaluationItem[]
+  review_id Int    @id @default(autoincrement())
+  // address   String?
+  photos    Json?
+
+  User           User?            @relation(fields: [userUser_id], references: [user_id])
+  userUser_id    Int?
+  Comment        Comment[]
+  Image          Image[]
+  EvaluationItem EvaluationItem[]
 }
 
 model Comment {
