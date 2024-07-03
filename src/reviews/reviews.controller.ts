@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -20,8 +21,14 @@ export class ReviewsController {
 
   @Post()
   @UseInterceptors(FilesInterceptor('photos', 10))
-  create(@Body() createReviewDto: CreateReviewDto, @UploadedFiles() photos) {
-    console.log('PHTOS', photos, 'createReviewDto', createReviewDto);
+  create(
+    @Body() createReviewDto: CreateReviewDto,
+    @UploadedFiles() photos: Express.Multer.File[],
+  ) {
+    if (!photos) {
+      throw new BadRequestException('File is missing');
+    }
+
     return this.reviewsService.create(createReviewDto, photos);
   }
 

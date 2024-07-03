@@ -15,10 +15,10 @@ export class ReviewsService {
     createReviewDto: CreateReviewDto,
     photos: Express.Multer.File[],
   ) {
-    let uploadedPhotos;
+    let uploadedData;
 
     if (photos && photos.length > 0) {
-      uploadedPhotos = await Promise.all(
+      uploadedData = await Promise.all(
         photos.map(async (photo) => {
           const photoUrl = await this.s3Service.uploadPhotoToS3(photo);
           console.log(photoUrl);
@@ -27,14 +27,14 @@ export class ReviewsService {
       ).then(async (photos) => {
         const review = await this.prisma.review.create({
           data: {
-            user_id: createReviewDto.user_id,
+            user_id: +createReviewDto.user_id,
             address: createReviewDto.address,
             sigungu: createReviewDto.sigungu,
             detailed_address: createReviewDto.detailed_address,
             residence_year: createReviewDto.residence_year,
             comprehensive_opinion: createReviewDto.comprehensive_opinion,
-            rating: createReviewDto.rating,
-            usage_fee: createReviewDto.usage_fee,
+            rating: +createReviewDto.rating,
+            usage_fee: +createReviewDto.usage_fee,
             residence_proof_document: createReviewDto.residence_proof_document,
             is_exposed: createReviewDto.is_exposed,
             view_count: createReviewDto.view_count,
@@ -43,8 +43,13 @@ export class ReviewsService {
             photos: { photosUrl: photos },
           },
         });
+        console.log('THIS IS REVIEW', review);
         return review;
       });
+
+      return uploadedData;
+    } else {
+      console.log('NO PHOTOS');
     }
   }
 

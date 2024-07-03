@@ -36,7 +36,6 @@ export class CreateReviewDto {
     description: 'User ID',
     example: 1,
   })
-  @IsNumber()
   user_id: number;
 
   @IsNotEmpty()
@@ -66,7 +65,6 @@ export class CreateReviewDto {
   @IsString()
   residence_proof_document?: string;
 
-  @IsNumber()
   rating: number;
 
   @IsString()
@@ -80,7 +78,6 @@ export class CreateReviewDto {
     | 'WAITING_FOR_RESIDENCE_VERIFICATION'
     | 'WAITING_AFTER_REJECTION';
 
-  @IsNumber()
   usage_fee: number;
 
   @IsNumber()
