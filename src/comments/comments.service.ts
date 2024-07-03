@@ -66,7 +66,7 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    const { data } = await this.findOne(id);
+    await this.findOne(id);
 
     const comment = await this.prisma.comment.delete({
       where: { comment_id: id },

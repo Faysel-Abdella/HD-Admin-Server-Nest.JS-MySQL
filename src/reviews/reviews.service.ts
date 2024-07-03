@@ -124,6 +124,111 @@ export class ReviewsService {
     };
   }
 
+  async findNewRegistrationVerificationReview() {
+    //  "신규등록 인증후기" === residence_proof_document not null & status === waiting
+    const review = await this.prisma.review.findMany({
+      where: {
+        residence_proof_document: { not: null },
+        status: 'WAITING',
+      },
+      include: { EvaluationItem: true },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  async findNewRegistrationUnVerificationReview() {
+    // "신규등록 미인증후기" === residence_proof_document null & status === waiting
+
+    const review = await this.prisma.review.findMany({
+      where: {
+        residence_proof_document: null,
+        status: 'WAITING',
+      },
+      include: { EvaluationItem: true },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  async findCertificationReview() {
+    // "인증후기" === residence_proof_document not null & status === approved
+    const review = await this.prisma.review.findMany({
+      where: {
+        residence_proof_document: { not: null },
+        status: 'APPROVED',
+      },
+      include: { EvaluationItem: true },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  async findUnverifiedReview() {
+    // "미인증후기" === residence_proof_document null & status === approved
+    const review = await this.prisma.review.findMany({
+      where: {
+        residence_proof_document: null,
+        status: 'APPROVED',
+      },
+      include: { EvaluationItem: true },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  async findPetReview() {
+    // '반려후기' === status === rejected;
+    const review = await this.prisma.review.findMany({
+      where: {
+        status: 'REJECTED',
+      },
+      include: { EvaluationItem: true },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  async findReRegistrationReview() {
+    // "재등록 후기" === status === waiting_for_update' | 'waiting_for_residence_verification' | 'waiting_after_rejection'
+    const review = await this.prisma.review.findMany({
+      where: {
+        status: {
+          in: [
+            'WAITING_FOR_UPDATE',
+            'WAITING_FOR_RESIDENCE_VERIFICATION',
+            'WAITING_AFTER_REJECTION',
+          ],
+        },
+      },
+      include: { EvaluationItem: true },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
   async findOne(id: number) {
     const review = await this.prisma.review.findUnique({
       where: { review_id: id },
