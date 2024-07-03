@@ -11,7 +11,38 @@ export class ReviewsService {
     private readonly s3Service: S3Service,
   ) {}
 
-  // A typical post request body for adding
+  // A typical post request body for adding a review
+  /*
+   {
+  "address": "Adama",
+  "sigungu": "test",
+  "user_id": 1,
+  "rating": 2,
+  "usage_fee": 30,
+  ....other fields
+  "photos": [file, file]
+  "evaluation_items": [
+    {
+      "display_order": 2,
+      "question_text": "text",
+      "score_0_text": "0",
+      "score_1_text": "1",
+      "score_3_text": "3",
+      "score_5_text": "5",
+      "price": 20
+    },
+     {
+      "display_order": 3,
+      "question_text": "text",
+      "score_0_text": "0",
+      "score_1_text": "1",
+      "score_3_text": "3",
+      "score_5_text": "5",
+      "price": 20
+    }
+    ]
+  }
+   */
 
   async create(
     createReviewDto: CreateReviewDto,
@@ -96,6 +127,7 @@ export class ReviewsService {
   async findOne(id: number) {
     const review = await this.prisma.review.findUnique({
       where: { review_id: id },
+      include: { EvaluationItem: true },
     });
 
     if (!review) {
@@ -115,7 +147,7 @@ export class ReviewsService {
 
   async update(id: number, updateReviewDto: UpdateReviewDto) {
     const { data } = await this.findOne(id);
-    const comment = await this.prisma.review.update({
+    const updatedReview = await this.prisma.review.update({
       where: { review_id: id },
       data: {
         address: updateReviewDto.address || data.address,
@@ -145,9 +177,34 @@ export class ReviewsService {
         status: updateReviewDto.status || data.status,
       },
     });
+
+    if (updateReviewDto.evaluation_items) {
+      const updatedEvaluationItems =
+        await this.prisma.evaluationItem.updateMany({
+          where: { review_id: id },
+          data: updateReviewDto.evaluation_items,
+        });
+    }
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Review Updated Successfully',
+      data: await this.prisma.review.findUnique({
+        where: { review_id: id },
+        include: { EvaluationItem: true },
+      }),
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: number) {
+    await this.findOne(id);
+    const review = await this.prisma.review.delete({
+      where: { review_id: id },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Review deleted successfully',
+    };
   }
 }
