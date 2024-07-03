@@ -37,6 +37,36 @@ export class ReviewsController {
     return this.reviewsService.findAll();
   }
 
+  @Get('new-registration-verification-review')
+  findNewRegistrationVerificationReview() {
+    return this.reviewsService.findNewRegistrationVerificationReview();
+  }
+
+  @Get('new-registration-un-verification-review')
+  findNewRegistrationUnVerificationReview() {
+    return this.reviewsService.findNewRegistrationUnVerificationReview();
+  }
+
+  @Get('certification-review')
+  findCertificationReview() {
+    return this.reviewsService.findCertificationReview();
+  }
+
+  @Get('unverified-review')
+  findUnverifiedReview() {
+    return this.reviewsService.findUnverifiedReview();
+  }
+
+  @Get('pet-review')
+  findPetReview() {
+    return this.reviewsService.findPetReview();
+  }
+
+  @Get('re-registration-review')
+  findReRegistrationReview() {
+    return this.reviewsService.findReRegistrationReview();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reviewsService.findOne(+id);
