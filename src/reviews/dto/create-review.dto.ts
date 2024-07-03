@@ -27,6 +27,9 @@ class EvaluationItemDto {
 
   @IsString()
   score_5_text: string;
+
+  @IsNumber()
+  price: number;
 }
 
 export class CreateReviewDto {
@@ -91,5 +94,5 @@ export class CreateReviewDto {
   @IsArray()
   @ValidateNested({ each: true })
   @IsOptional()
-  evaluation_items: String[];
+  evaluation_items: EvaluationItemDto[];
 }

@@ -40,8 +40,8 @@ model Review {
   status                   Status   @default(DRAFT)
   is_exposed               Boolean  @default(true)
   registration_date        DateTime @default(now())
-  evaluation_items         String?
-
+  // evaluation_item          EvaluationItem[]
+ 
   User           User?            @relation(fields: [userUser_id], references: [user_id])
   userUser_id    Int?
   Comment        Comment[]

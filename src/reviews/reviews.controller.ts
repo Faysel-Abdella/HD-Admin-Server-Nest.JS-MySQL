@@ -26,7 +26,7 @@ export class ReviewsController {
     @UploadedFiles() photos: Express.Multer.File[],
   ) {
     if (!photos) {
-      throw new BadRequestException('File is missing');
+      throw new BadRequestException('Photos is missing');
     }
 
     return this.reviewsService.create(createReviewDto, photos);
