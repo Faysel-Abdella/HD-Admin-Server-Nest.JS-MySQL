@@ -16,13 +16,18 @@ export class CreateCommentDto {
   @IsInt()
   comment_id: number;
 
-  @ApiProperty({ description: 'The ID of the associated review', example: 1 })
+  @ApiProperty({
+    description: 'The ID of the associated review',
+    example: 18,
+    required: true,
+  })
   @IsInt()
   review_id: number;
 
   @ApiProperty({
     description: 'The ID of the user who made the comment',
-    example: 1,
+    example: 7,
+    required: true,
   })
   @IsInt()
   user_id: number;
@@ -39,6 +44,7 @@ export class CreateCommentDto {
   @ApiProperty({
     description: 'The content of the comment',
     example: 'This is a comment.',
+    required: true,
   })
   @IsString()
   comment: string;
@@ -53,6 +59,5 @@ export class CreateCommentDto {
     required: false,
   })
   @IsOptional()
-  @IsDate()
-  admin_processed_at?: Date;
+  admin_processed_at?: any;
 }
