@@ -41,6 +41,7 @@ export class ReviewsController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('address') address?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findAll(
       +page,
@@ -48,6 +49,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       address,
+      username,
     );
   }
 

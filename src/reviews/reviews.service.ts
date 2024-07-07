@@ -171,6 +171,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     address?: string,
+    username?: string,
   ) {
     const skip = page ? (page - 1) * limit : 0;
 
@@ -196,6 +197,9 @@ export class ReviewsService {
           contains: address ? address.toLowerCase() : undefined,
         },
         status: address ? 'APPROVED' : undefined,
+        User: {
+          username: username ? username.toLowerCase() : undefined,
+        },
       },
     });
     return {
