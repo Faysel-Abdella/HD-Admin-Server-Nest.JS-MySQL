@@ -24,6 +24,7 @@ export class CommentsService {
       skip: skip,
       ...(limit && { take: limit }),
     });
+
     return {
       statusCode: HttpStatus.OK,
       message: 'Comments retrieved successfully',

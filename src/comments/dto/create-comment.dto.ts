@@ -14,18 +14,18 @@ export class CreateCommentDto {
     example: 1,
   })
   @IsInt()
-  readonly comment_id: number;
+  comment_id: number;
 
   @ApiProperty({ description: 'The ID of the associated review', example: 1 })
   @IsInt()
-  readonly review_id: number;
+  review_id: number;
 
   @ApiProperty({
     description: 'The ID of the user who made the comment',
     example: 1,
   })
   @IsInt()
-  readonly user_id: number;
+  user_id: number;
 
   @ApiProperty({
     description: 'The ID of the admin who processed the comment',
@@ -34,25 +34,18 @@ export class CreateCommentDto {
   })
   @IsOptional()
   @IsInt()
-  readonly admin_id?: number;
+  admin_id?: number;
 
   @ApiProperty({
     description: 'The content of the comment',
     example: 'This is a comment.',
   })
   @IsString()
-  readonly comment: string;
-
-  @ApiProperty({
-    description: 'The date the comment was made',
-    example: new Date(),
-  })
-  @IsDate()
-  readonly comment_date: Date;
+  comment: string;
 
   @ApiProperty({ description: 'Whether the comment is exposed', example: true })
   @IsBoolean()
-  readonly is_exposed: boolean;
+  is_exposed: boolean;
 
   @ApiProperty({
     description: 'The date the admin processed the comment',
@@ -61,12 +54,5 @@ export class CreateCommentDto {
   })
   @IsOptional()
   @IsDate()
-  readonly admin_processed_at?: Date;
-
-  @ApiProperty({
-    description: 'The date the comment was last updated',
-    example: new Date(),
-  })
-  @IsDate()
-  readonly updated_at: Date;
+  admin_processed_at?: Date;
 }
