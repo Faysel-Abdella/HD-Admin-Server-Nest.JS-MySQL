@@ -59,12 +59,14 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findNewRegistrationVerificationReview(
       +page,
       +limit,
       sortBy,
       sortOrder,
+      username,
     );
   }
 
@@ -74,12 +76,14 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findNewRegistrationUnVerificationReview(
       +page,
       +limit,
       sortBy,
       sortOrder,
+      username,
     );
   }
 
@@ -89,12 +93,14 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findCertificationReview(
       +page,
       +limit,
       sortBy,
       sortOrder,
+      username,
     );
   }
 
@@ -104,12 +110,14 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findUnverifiedReview(
       +page,
       +limit,
       sortBy,
       sortOrder,
+      username,
     );
   }
 
@@ -119,8 +127,15 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
-    return this.reviewsService.findPetReview(+page, +limit, sortBy, sortOrder);
+    return this.reviewsService.findPetReview(
+      +page,
+      +limit,
+      sortBy,
+      sortOrder,
+      username,
+    );
   }
 
   @Get('re-registration-review')
@@ -129,12 +144,14 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('username') username?: string,
   ) {
     return this.reviewsService.findReRegistrationReview(
       +page,
       +limit,
       sortBy,
       sortOrder,
+      username,
     );
   }
 
