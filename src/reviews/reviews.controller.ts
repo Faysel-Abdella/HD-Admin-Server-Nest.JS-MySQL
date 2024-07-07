@@ -40,8 +40,15 @@ export class ReviewsController {
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
+    @Query('address') address?: string,
   ) {
-    return this.reviewsService.findAll(+page, +limit, sortBy, sortOrder);
+    return this.reviewsService.findAll(
+      +page,
+      +limit,
+      sortBy,
+      sortOrder,
+      address,
+    );
   }
 
   @Get('new-registration-verification-review')

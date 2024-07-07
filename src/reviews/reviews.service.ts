@@ -100,7 +100,7 @@ export class ReviewsService {
 
         const createdReview = await this.prisma.review.findUnique({
           where: { review_id: reviewId },
-          include: { EvaluationItem: true },
+          include: { EvaluationItem: true, User: true },
         });
 
         return {
@@ -154,7 +154,7 @@ export class ReviewsService {
 
       const createdReview = await this.prisma.review.findUnique({
         where: { review_id: reviewId },
-        include: { EvaluationItem: true },
+        include: { EvaluationItem: true, User: true },
       });
 
       return {
@@ -170,6 +170,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
   ) {
     const skip = page ? (page - 1) * limit : 0;
 
@@ -186,10 +187,16 @@ export class ReviewsService {
     }
 
     const reviews = await this.prisma.review.findMany({
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
+      where: {
+        address: {
+          contains: address ? address.toLowerCase() : undefined,
+        },
+        status: address ? 'APPROVED' : undefined,
+      },
     });
     return {
       statusCode: HttpStatus.OK,
@@ -227,7 +234,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
 
     return {
@@ -266,7 +273,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
 
     return {
@@ -305,7 +312,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
 
     return {
@@ -344,7 +351,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
     return {
       statusCode: HttpStatus.OK,
@@ -381,7 +388,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
     return {
       statusCode: HttpStatus.OK,
@@ -424,7 +431,7 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
 
     return {
@@ -437,7 +444,7 @@ export class ReviewsService {
   async findOne(id: number) {
     const review = await this.prisma.review.findUnique({
       where: { review_id: id },
-      include: { EvaluationItem: true },
+      include: { EvaluationItem: true, User: true },
     });
 
     if (!review) {
@@ -501,7 +508,7 @@ export class ReviewsService {
       message: 'Review Updated Successfully',
       data: await this.prisma.review.findUnique({
         where: { review_id: id },
-        include: { EvaluationItem: true },
+        include: { EvaluationItem: true, User: true },
       }),
     };
   }
