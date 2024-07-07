@@ -35,18 +35,27 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.reviewsService.findAll(+page, +limit);
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
+  ) {
+    return this.reviewsService.findAll(+page, +limit, sortBy, sortOrder);
   }
 
   @Get('new-registration-verification-review')
   findNewRegistrationVerificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
     return this.reviewsService.findNewRegistrationVerificationReview(
       +page,
       +limit,
+      sortBy,
+      sortOrder,
     );
   }
 
@@ -54,10 +63,14 @@ export class ReviewsController {
   findNewRegistrationUnVerificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
     return this.reviewsService.findNewRegistrationUnVerificationReview(
       +page,
       +limit,
+      sortBy,
+      sortOrder,
     );
   }
 
@@ -65,29 +78,55 @@ export class ReviewsController {
   findCertificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
-    return this.reviewsService.findCertificationReview(+page, +limit);
+    return this.reviewsService.findCertificationReview(
+      +page,
+      +limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   @Get('unverified-review')
   findUnverifiedReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
-    return this.reviewsService.findUnverifiedReview(+page, +limit);
+    return this.reviewsService.findUnverifiedReview(
+      +page,
+      +limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   @Get('pet-review')
-  findPetReview(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.reviewsService.findPetReview(+page, +limit);
+  findPetReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
+  ) {
+    return this.reviewsService.findPetReview(+page, +limit, sortBy, sortOrder);
   }
 
   @Get('re-registration-review')
   findReRegistrationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
-    return this.reviewsService.findReRegistrationReview(+page, +limit);
+    return this.reviewsService.findReRegistrationReview(
+      +page,
+      +limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   @Get(':id')

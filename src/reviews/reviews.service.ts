@@ -165,12 +165,31 @@ export class ReviewsService {
     }
   }
 
-  async findAll(page?: number, limit?: number) {
+  async findAll(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const reviews = await this.prisma.review.findMany({
       include: { EvaluationItem: true },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
     });
     return {
       statusCode: HttpStatus.OK,
@@ -179,9 +198,27 @@ export class ReviewsService {
     };
   }
 
-  async findNewRegistrationVerificationReview(page?: number, limit?: number) {
+  async findNewRegistrationVerificationReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     //  "신규등록 인증후기" === residence_proof_document not null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: { not: null },
@@ -189,6 +226,7 @@ export class ReviewsService {
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
 
@@ -199,9 +237,27 @@ export class ReviewsService {
     };
   }
 
-  async findNewRegistrationUnVerificationReview(page?: number, limit?: number) {
+  async findNewRegistrationUnVerificationReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     // "신규등록 미인증후기" === residence_proof_document null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: null,
@@ -209,6 +265,7 @@ export class ReviewsService {
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
 
@@ -219,9 +276,27 @@ export class ReviewsService {
     };
   }
 
-  async findCertificationReview(page?: number, limit?: number) {
+  async findCertificationReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     // "인증후기" === residence_proof_document not null & status === approved
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: { not: null },
@@ -229,6 +304,7 @@ export class ReviewsService {
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
 
@@ -239,9 +315,27 @@ export class ReviewsService {
     };
   }
 
-  async findUnverifiedReview(page?: number, limit?: number) {
+  async findUnverifiedReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     // "미인증후기" === residence_proof_document null & status === approved
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: null,
@@ -249,6 +343,7 @@ export class ReviewsService {
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
     return {
@@ -258,15 +353,34 @@ export class ReviewsService {
     };
   }
 
-  async findPetReview(page?: number, limit?: number) {
+  async findPetReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     // '반려후기' === status === rejected;
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         status: 'REJECTED',
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
     return {
@@ -276,9 +390,27 @@ export class ReviewsService {
     };
   }
 
-  async findReRegistrationReview(page?: number, limit?: number) {
+  async findReRegistrationReview(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     // "재등록 후기" === status === waiting_for_update' | 'waiting_for_residence_verification' | 'waiting_after_rejection'
     const skip = page ? (page - 1) * limit : 0;
+
+    const orderBy: any = {};
+
+    if (sortBy === 'rating') {
+      orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'usageFee') {
+      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else if (sortBy === 'viewCount') {
+      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+    }
+
     const review = await this.prisma.review.findMany({
       where: {
         status: {
@@ -291,6 +423,7 @@ export class ReviewsService {
       },
       skip: skip,
       ...(limit && { take: limit }),
+      orderBy: orderBy,
       include: { EvaluationItem: true },
     });
 
