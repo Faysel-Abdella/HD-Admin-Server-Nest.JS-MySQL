@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Body,
+  Query,
   Patch,
   Param,
   Delete,
@@ -21,8 +22,8 @@ export class CommentsController {
   }
 
   @Get()
-  findAll() {
-    return this.commentsService.findAll();
+  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
+    return this.commentsService.findAll(+page, +limit);
   }
 
   @Get(':id')

@@ -18,8 +18,12 @@ export class CommentsService {
     };
   }
 
-  async findAll() {
-    const comments = await this.prisma.comment.findMany();
+  async findAll(page?: number, limit?: number) {
+    const skip = page ? (page - 1) * limit : 0;
+    const comments = await this.prisma.comment.findMany({
+      skip: skip,
+      ...(limit && { take: limit }),
+    });
     return {
       statusCode: HttpStatus.OK,
       message: 'Comments retrieved successfully',
