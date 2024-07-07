@@ -40,33 +40,54 @@ export class ReviewsController {
   }
 
   @Get('new-registration-verification-review')
-  findNewRegistrationVerificationReview() {
-    return this.reviewsService.findNewRegistrationVerificationReview();
+  findNewRegistrationVerificationReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.reviewsService.findNewRegistrationVerificationReview(
+      +page,
+      +limit,
+    );
   }
 
   @Get('new-registration-un-verification-review')
-  findNewRegistrationUnVerificationReview() {
-    return this.reviewsService.findNewRegistrationUnVerificationReview();
+  findNewRegistrationUnVerificationReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.reviewsService.findNewRegistrationUnVerificationReview(
+      +page,
+      +limit,
+    );
   }
 
   @Get('certification-review')
-  findCertificationReview() {
-    return this.reviewsService.findCertificationReview();
+  findCertificationReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.reviewsService.findCertificationReview(+page, +limit);
   }
 
   @Get('unverified-review')
-  findUnverifiedReview() {
-    return this.reviewsService.findUnverifiedReview();
+  findUnverifiedReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.reviewsService.findUnverifiedReview(+page, +limit);
   }
 
   @Get('pet-review')
-  findPetReview() {
-    return this.reviewsService.findPetReview();
+  findPetReview(@Query('page') page?: number, @Query('limit') limit?: number) {
+    return this.reviewsService.findPetReview(+page, +limit);
   }
 
   @Get('re-registration-review')
-  findReRegistrationReview() {
-    return this.reviewsService.findReRegistrationReview();
+  findReRegistrationReview(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.reviewsService.findReRegistrationReview(+page, +limit);
   }
 
   @Get(':id')

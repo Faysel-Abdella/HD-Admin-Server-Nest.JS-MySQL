@@ -170,7 +170,7 @@ export class ReviewsService {
     const reviews = await this.prisma.review.findMany({
       include: { EvaluationItem: true },
       skip: skip,
-      take: +limit,
+      ...(limit && { take: limit }),
     });
     return {
       statusCode: HttpStatus.OK,
@@ -179,13 +179,16 @@ export class ReviewsService {
     };
   }
 
-  async findNewRegistrationVerificationReview() {
+  async findNewRegistrationVerificationReview(page?: number, limit?: number) {
     //  "신규등록 인증후기" === residence_proof_document not null & status === waiting
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: { not: null },
         status: 'WAITING',
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
 
@@ -196,14 +199,16 @@ export class ReviewsService {
     };
   }
 
-  async findNewRegistrationUnVerificationReview() {
+  async findNewRegistrationUnVerificationReview(page?: number, limit?: number) {
     // "신규등록 미인증후기" === residence_proof_document null & status === waiting
-
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: null,
         status: 'WAITING',
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
 
@@ -214,13 +219,16 @@ export class ReviewsService {
     };
   }
 
-  async findCertificationReview() {
+  async findCertificationReview(page?: number, limit?: number) {
     // "인증후기" === residence_proof_document not null & status === approved
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: { not: null },
         status: 'APPROVED',
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
 
@@ -231,13 +239,16 @@ export class ReviewsService {
     };
   }
 
-  async findUnverifiedReview() {
+  async findUnverifiedReview(page?: number, limit?: number) {
     // "미인증후기" === residence_proof_document null & status === approved
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         residence_proof_document: null,
         status: 'APPROVED',
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
     return {
@@ -247,12 +258,15 @@ export class ReviewsService {
     };
   }
 
-  async findPetReview() {
+  async findPetReview(page?: number, limit?: number) {
     // '반려후기' === status === rejected;
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         status: 'REJECTED',
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
     return {
@@ -262,8 +276,9 @@ export class ReviewsService {
     };
   }
 
-  async findReRegistrationReview() {
+  async findReRegistrationReview(page?: number, limit?: number) {
     // "재등록 후기" === status === waiting_for_update' | 'waiting_for_residence_verification' | 'waiting_after_rejection'
+    const skip = page ? (page - 1) * limit : 0;
     const review = await this.prisma.review.findMany({
       where: {
         status: {
@@ -274,6 +289,8 @@ export class ReviewsService {
           ],
         },
       },
+      skip: skip,
+      ...(limit && { take: limit }),
       include: { EvaluationItem: true },
     });
 
