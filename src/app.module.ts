@@ -24,10 +24,11 @@ import { CommentsModule } from './comments/comments.module';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtGuard,
-    },
+    // ## If you want to protect all routes with JWT, uncomment the following code
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtGuard,
+    // },
   ],
 })
 export class AppModule {}

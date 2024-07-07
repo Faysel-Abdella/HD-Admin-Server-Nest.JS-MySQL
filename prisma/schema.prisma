@@ -29,11 +29,11 @@ model Review {
   user_id                  Int
   address                  String
   sigungu                  String
-  detailed_address         String?
-  residence_year           String?
-  comprehensive_opinion    String?
+  detailed_address         String
+  residence_year           String
+  comprehensive_opinion    String
   photos                   Json?
-  residence_proof_document String?
+  residence_proof_document String
   rating                   Float
   usage_fee                Float
   view_count               Int      @default(0)
@@ -41,9 +41,8 @@ model Review {
   is_exposed               Boolean  @default(true)
   registration_date        DateTime @default(now())
   // evaluation_item          EvaluationItem[]
- 
-  User           User?            @relation(fields: [userUser_id], references: [user_id])
-  userUser_id    Int?
+
+  User           User?            @relation(fields: [user_id], references: [user_id])
   Comment        Comment[]
   EvaluationItem EvaluationItem[]
 }
@@ -62,7 +61,6 @@ model Comment {
   user               User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   admin              Admin?    @relation(fields: [admin_id], references: [admin_id], onDelete: SetNull)
 }
-
 
 model EvaluationItem {
   item_id       Int     @id @default(autoincrement())

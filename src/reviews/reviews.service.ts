@@ -1,17 +1,17 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { S3Service } from '../s3/s3.service';
+import { FileUploadService } from '../utils/image-upload/upload.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly s3Service: S3Service,
+    private readonly FileUploadService: FileUploadService,
   ) {}
 
-  // A typical post request body for adding a review
+  // A typical post request body for adding a review - form-data
   /*
    {
   "address": "Adama",
@@ -53,8 +53,7 @@ export class ReviewsService {
     if (photos && photos.length > 0) {
       uploadedData = await Promise.all(
         photos.map(async (photo) => {
-          const photoUrl = await this.s3Service.uploadPhotoToS3(photo);
-          console.log(photoUrl);
+          const photoUrl = await this.FileUploadService.uploadPhoto(photo);
           return { url: photoUrl };
         }),
       ).then(async (photos) => {
@@ -70,7 +69,7 @@ export class ReviewsService {
             usage_fee: +createReviewDto.usage_fee,
             residence_proof_document: createReviewDto.residence_proof_document,
             is_exposed: createReviewDto.is_exposed,
-            view_count: createReviewDto.view_count,
+            view_count: +createReviewDto.view_count,
             registration_date: new Date(),
             status: createReviewDto.status,
             photos: { photosUrl: photos },
@@ -99,17 +98,74 @@ export class ReviewsService {
           });
         }
 
+        const createdReview = await this.prisma.review.findUnique({
+          where: { review_id: reviewId },
+          include: { EvaluationItem: true },
+        });
+
+        console.log('CREATED REVIEW', createdReview);
+
         return {
           statusCode: HttpStatus.CREATED,
           message: 'Review created successfully',
-          data: this.prisma.review.findUnique({
-            where: { review_id: reviewId },
-            include: { EvaluationItem: true },
-          }),
+          data: createdReview,
         };
       });
     } else {
       console.log('NO PHOTOS');
+      const review = await this.prisma.review.create({
+        data: {
+          user_id: +createReviewDto.user_id,
+          address: createReviewDto.address,
+          sigungu: createReviewDto.sigungu,
+          detailed_address: createReviewDto.detailed_address,
+          residence_year: createReviewDto.residence_year,
+          comprehensive_opinion: createReviewDto.comprehensive_opinion,
+          rating: +createReviewDto.rating,
+          usage_fee: +createReviewDto.usage_fee,
+          residence_proof_document: createReviewDto.residence_proof_document,
+          is_exposed: createReviewDto.is_exposed,
+          view_count: +createReviewDto.view_count,
+          registration_date: new Date(),
+          status: createReviewDto.status,
+          photos: { photosUrl: [] },
+        },
+      });
+
+      const reviewId = review.review_id;
+      const evaluation_items = createReviewDto.evaluation_items;
+
+      if (evaluation_items && evaluation_items.length > 0) {
+        const evaluationItems = evaluation_items.map((item) => {
+          return {
+            display_order: item.display_order,
+            question_text: item.question_text,
+            score_0_text: item.score_0_text,
+            score_1_text: item.score_1_text,
+            score_3_text: item.score_3_text,
+            score_5_text: item.score_5_text,
+            price: item.price,
+            review_id: reviewId,
+          };
+        });
+
+        await this.prisma.evaluationItem.createMany({
+          data: evaluationItems,
+        });
+      }
+
+      const createdReview = await this.prisma.review.findUnique({
+        where: { review_id: reviewId },
+        include: { EvaluationItem: true },
+      });
+
+      console.log('CREATED REVIEW', createdReview);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Review created successfully',
+        data: createdReview,
+      };
     }
   }
 

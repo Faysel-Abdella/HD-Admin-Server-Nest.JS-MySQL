@@ -26,7 +26,8 @@ export class AuthController {
   @Post('user/login')
   @Public()
   @UsePipes(new ValidationPipe())
-  @UseGuards(LocalGuard)
+  // ## if you want to protect the login route with the LocalGuard, uncomment the following code
+  // @UseGuards(LocalGuard)
   userLogin(@Body() loginDto: LoginDto) {
     return this.authService.userLogin(loginDto);
   }
@@ -41,6 +42,7 @@ export class AuthController {
   @Post('admin/login')
   @Public()
   @UsePipes(new ValidationPipe())
+  // ## if you want to protect the login route with the LocalGuard, uncomment the following code
   // @UseGuards(LocalGuard)
   adminLogin(@Body() loginDto: LoginDto) {
     return this.authService.adminLogin(loginDto);

@@ -25,9 +25,11 @@ export class ReviewsController {
     @Body() createReviewDto: CreateReviewDto,
     @UploadedFiles() photos: Express.Multer.File[],
   ) {
-    if (!photos) {
-      throw new BadRequestException('Photos is missing');
-    }
+
+    // If the photo is mandatory, uncomment the following code
+    // if (!photos) {
+    //   throw new BadRequestException('photos is missing');
+    // }
 
     return this.reviewsService.create(createReviewDto, photos);
   }
