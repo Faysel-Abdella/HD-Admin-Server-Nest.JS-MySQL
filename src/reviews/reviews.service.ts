@@ -103,8 +103,6 @@ export class ReviewsService {
           include: { EvaluationItem: true },
         });
 
-        console.log('CREATED REVIEW', createdReview);
-
         return {
           statusCode: HttpStatus.CREATED,
           message: 'Review created successfully',
@@ -159,19 +157,20 @@ export class ReviewsService {
         include: { EvaluationItem: true },
       });
 
-      console.log('CREATED REVIEW', createdReview);
-
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Review created successfully',
+        message: 'Review created successfully without photos',
         data: createdReview,
       };
     }
   }
 
-  async findAll() {
+  async findAll(page?: number, limit?: number) {
+    const skip = page ? (page - 1) * limit : 0;
     const reviews = await this.prisma.review.findMany({
       include: { EvaluationItem: true },
+      skip: skip,
+      take: +limit,
     });
     return {
       statusCode: HttpStatus.OK,

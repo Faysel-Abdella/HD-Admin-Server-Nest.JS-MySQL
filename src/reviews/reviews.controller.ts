@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   UseInterceptors,
   UploadedFiles,
   BadRequestException,
@@ -25,7 +26,6 @@ export class ReviewsController {
     @Body() createReviewDto: CreateReviewDto,
     @UploadedFiles() photos: Express.Multer.File[],
   ) {
-
     // If the photo is mandatory, uncomment the following code
     // if (!photos) {
     //   throw new BadRequestException('photos is missing');
@@ -35,8 +35,8 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
+    return this.reviewsService.findAll(+page, +limit);
   }
 
   @Get('new-registration-verification-review')
