@@ -29,14 +29,16 @@ model Admin {
 model Review {
   reviewId               Int      @id @default(autoincrement())
   userId                 Int
-  address                String
-  sigungu                String
+  // ######   we will create a review using only the below three pieces of data
+  address                String  
   detailedAddress        String
   residenceYear          String
-  comprehensiveOpinion   String
+  // #######
+  sigungu                String?
+  comprehensiveOpinion   String?
   residenceProofDocument String?
-  rating                 Float
-  usageFee               Float
+  rating                 Float?
+  usageFee               Float?
   viewCount              Int      @default(0)
   status                 Status   @default(DRAFT)
   isExposed              Boolean  @default(true)
@@ -53,9 +55,9 @@ model Image {
   reviewId    Int
   userId      Int
   adminId     Int? 
-  imageUrl    String
+  images      Json
   isExposed   Boolean   @default(true)
-  processedAt DateTime
+  processedAt DateTime  @default(now())
  
   review      Review?   @relation(fields: [reviewId], references: [reviewId])
   user        User     @relation(fields: [userId], references: [userId])

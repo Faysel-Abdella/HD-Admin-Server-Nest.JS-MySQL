@@ -10,6 +10,7 @@ import { JwtGuard } from './auth/guards/jwt.guad';
 import { UsersModule } from './users/users.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { CommentsModule } from './comments/comments.module';
+import { ImageUploadsModule } from './image-uploads/image-uploads.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CommentsModule } from './comments/comments.module';
     UsersModule,
     ReviewsModule,
     CommentsModule,
+    ImageUploadsModule,
   ],
   controllers: [AppController],
   providers: [

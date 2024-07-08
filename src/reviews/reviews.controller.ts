@@ -31,17 +31,8 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post('add-review')
-  @UseInterceptors(FilesInterceptor('photos', 10))
-  create(
-    @Body() createReviewDto: CreateReviewDto,
-    @UploadedFiles() photos: Express.Multer.File[],
-  ) {
-    // If the photo is mandatory, uncomment the following code
-    // if (!photos) {
-    //   throw new BadRequestException('photos is missing');
-    // }
-
-    return this.reviewsService.create(createReviewDto, photos);
+  create(@Body() createReviewDto: CreateReviewDto) {
+    return this.reviewsService.create(createReviewDto);
   }
 
   @Get('admin/reviews')

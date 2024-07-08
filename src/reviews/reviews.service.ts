@@ -44,146 +44,54 @@ export class ReviewsService {
   }
    */
 
-  async create(
-    createReviewDto: CreateReviewDto,
-    photos: Express.Multer.File[],
-  ) {
-    let uploadedData;
-
+  async create(createReviewDto: CreateReviewDto) {
     try {
-      if (photos && photos.length > 0) {
-        uploadedData = await Promise.all(
-          photos.map(async (photo) => {
-            const photoUrl = await this.FileUploadService.uploadPhoto(photo);
-            return { url: photoUrl };
-          }),
-        ).then(async (photos) => {
-          const review = await this.prisma.review.create({
-            data: {
-              userId: +createReviewDto.userId,
-              address: createReviewDto.address,
-              sigungu: createReviewDto.sigungu,
-              detailedAddress: createReviewDto.detailedAddress,
-              residenceYear: createReviewDto.residenceYear,
-              comprehensiveOpinion: createReviewDto.comprehensiveOpinion,
-              rating: +createReviewDto.rating,
-              usageFee: +createReviewDto.usageFee,
-              residenceProofDocument: createReviewDto.residenceProofDocument,
-              isExposed: createReviewDto.isExposed,
-              viewCount: +createReviewDto.viewCount,
-              registrationDate: new Date(),
-              status: createReviewDto.status,
-              photos: { photosUrl: photos },
-            },
-          });
+      const review = await this.prisma.review.create({
+        data: createReviewDto,
+      });
 
-          const reviewId = review.reviewId;
-          const evaluationItemsInput = createReviewDto.evaluationItems;
+      const reviewId = review.reviewId;
+      const evaluationItemsInput = createReviewDto.evaluationItems;
 
-          if (evaluationItemsInput && evaluationItemsInput.length > 0) {
-            const evaluationItems = evaluationItemsInput.map((item) => {
-              return {
-                displayOrder: item.displayOrder,
-                questionText: item.questionText,
-                detailedDescription: item.detailedDescription,
-                score0Text: item.score0Text,
-                score1Text: item.score1Text,
-                score3Text: item.score3Text,
-                score5Text: item.score5Text,
-                price: item.price,
-                reviewId: reviewId,
-              };
-            });
-
-            await this.prisma.evaluationItem.createMany({
-              data: evaluationItems,
-            });
-          }
-
-          const createdReview = await this.prisma.review.findUnique({
-            where: { reviewId: reviewId },
-            include: {
-              EvaluationItem: true,
-              User: {
-                select: {
-                  userId: true,
-                  username: true,
-                  email: true,
-                },
-              },
-            },
-          });
-
+      if (evaluationItemsInput && evaluationItemsInput.length > 0) {
+        const evaluationItems = evaluationItemsInput.map((item) => {
           return {
-            statusCode: HttpStatus.CREATED,
-            message: 'Review created successfully',
-            data: createdReview,
+            displayOrder: item.displayOrder,
+            questionText: item.questionText,
+            detailedDescription: item.detailedDescription,
+            score0Text: item.score0Text,
+            score1Text: item.score1Text,
+            score3Text: item.score3Text,
+            score5Text: item.score5Text,
+            price: item.price,
+            reviewId: reviewId,
           };
         });
-      } else {
-        console.log('NO PHOTOS');
-        const review = await this.prisma.review.create({
-          data: {
-            userId: +createReviewDto.userId,
-            address: createReviewDto.address,
-            sigungu: createReviewDto.sigungu,
-            detailedAddress: createReviewDto.detailedAddress,
-            residenceYear: createReviewDto.residenceYear,
-            comprehensiveOpinion: createReviewDto.comprehensiveOpinion,
-            rating: +createReviewDto.rating,
-            usageFee: +createReviewDto.usageFee,
-            residenceProofDocument: createReviewDto.residenceProofDocument,
-            isExposed: createReviewDto.isExposed,
-            viewCount: +createReviewDto.viewCount,
-            registrationDate: new Date(),
-            status: createReviewDto.status,
-            photos: { photosUrl: [] },
-          },
+
+        await this.prisma.evaluationItem.createMany({
+          data: evaluationItems,
         });
+      }
 
-        const reviewId = review.reviewId;
-        const evaluationItemsInput = createReviewDto.evaluationItems;
-
-        if (evaluationItemsInput && evaluationItemsInput.length > 0) {
-          const evaluationItems = evaluationItemsInput.map((item) => {
-            return {
-              displayOrder: item.displayOrder,
-              questionText: item.questionText,
-              detailedDescription: item.detailedDescription,
-              score0Text: item.score0Text,
-              score1Text: item.score1Text,
-              score3Text: item.score3Text,
-              score5Text: item.score5Text,
-              price: item.price,
-              reviewId: reviewId,
-            };
-          });
-
-          await this.prisma.evaluationItem.createMany({
-            data: evaluationItems,
-          });
-        }
-
-        const createdReview = await this.prisma.review.findUnique({
-          where: { reviewId: reviewId },
-          include: {
-            EvaluationItem: true,
-            User: {
-              select: {
-                userId: true,
-                username: true,
-                email: true,
-              },
+      const createdReview = await this.prisma.review.findUnique({
+        where: { reviewId: reviewId },
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              userId: true,
+              username: true,
+              email: true,
             },
           },
-        });
+        },
+      });
 
-        return {
-          statusCode: HttpStatus.CREATED,
-          message: 'Review created successfully without photos',
-          data: createdReview,
-        };
-      }
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Review created successfully without photos',
+        data: createdReview,
+      };
     } catch (error) {
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
