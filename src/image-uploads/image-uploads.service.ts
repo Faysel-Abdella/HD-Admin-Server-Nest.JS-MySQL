@@ -19,6 +19,7 @@ export class ImageUploadsService {
 
     try {
       if (images && images.length > 0) {
+        console.log('UPLOADING STARTED');
         uploadedData = await Promise.all(
           images.map(async (photo) => {
             const photoUrl = await this.FileUploadService.uploadPhoto(photo);
@@ -27,9 +28,9 @@ export class ImageUploadsService {
         ).then(async (photos) => {
           const uploadedImage = await this.prisma.image.create({
             data: {
-              reviewId: createImageUploadDto.reviewId,
-              userId: createImageUploadDto.userId,
-              adminId: createImageUploadDto.adminId,
+              reviewId: +createImageUploadDto.reviewId,
+              userId: +createImageUploadDto.userId,
+              adminId: +createImageUploadDto.adminId,
               images: { photos: photos },
               isExposed: createImageUploadDto.isExposed,
             },
@@ -57,7 +58,7 @@ export class ImageUploadsService {
   async findAll() {
     try {
       const images = await this.prisma.image.findMany();
-      if (!images) {
+      if (images.length === 0) {
         return {
           statusCode: HttpStatus.NOT_FOUND,
           message: 'No photos found',

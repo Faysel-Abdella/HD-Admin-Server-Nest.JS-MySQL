@@ -16,8 +16,8 @@ export class CreateImageUploadDto {
     description: 'The review id to which the image belongs to',
     example: 1,
   })
-  @IsNumber()
-  reviewId: number;
+  @IsNotEmpty()
+  reviewId: number | string;
 
   @ApiProperty({
     required: true,
@@ -25,8 +25,8 @@ export class CreateImageUploadDto {
     description: 'The user id who uploaded the image',
     example: 1,
   })
-  @IsNumber()
-  userId: number;
+  @IsNotEmpty()
+  userId: number | string;
 
   @ApiProperty({
     required: true,
@@ -34,12 +34,12 @@ export class CreateImageUploadDto {
     description: 'The admin id who approved the image',
     example: 1,
   })
-  @IsNumber()
-  adminId: number;
+  @IsNotEmpty()
+  adminId: number | string;
 
   @ApiProperty({
     required: true,
-    type: 'file',
+    type: 'array',
     description: 'Array of images to upload',
     example: '[image1.jpg, image2.jpg]',
   })
@@ -53,5 +53,6 @@ export class CreateImageUploadDto {
     example: true,
   })
   @IsBoolean()
+  @IsOptional()
   isExposed?: boolean;
 }

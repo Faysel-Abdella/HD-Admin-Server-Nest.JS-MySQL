@@ -128,6 +128,7 @@ export class CreateReviewDto {
     description: 'Sigungu',
     example: 'Seoul',
   })
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   sigungu?: string;
@@ -138,6 +139,7 @@ export class CreateReviewDto {
     description: 'Comprehensive opinion',
     example: 'Good',
   })
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   comprehensiveOpinion?: string;
@@ -145,18 +147,10 @@ export class CreateReviewDto {
   @ApiProperty({
     required: true,
     type: 'string',
-    description: 'Array of photos',
-    example: '[ "photo1.jpg", "photo2.jpg"]',
-  })
-  @IsOptional()
-  photos?: any;
-
-  @ApiProperty({
-    required: true,
-    type: 'string',
     description: 'Residence proof document',
     example: 'Yes',
   })
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   residenceProofDocument?: string;
@@ -167,6 +161,7 @@ export class CreateReviewDto {
     description: 'Rating',
     example: 5,
   })
+  @IsOptional()
   @IsNotEmpty()
   rating?: number;
 
@@ -203,6 +198,7 @@ export class CreateReviewDto {
     description: 'Usage fee',
     example: 100,
   })
+  @IsOptional()
   @IsNotEmpty()
   usageFee?: number;
 
@@ -223,6 +219,7 @@ export class CreateReviewDto {
     example: true,
     default: true,
   })
+  @IsOptional()
   @IsBoolean()
   @IsOptional()
   isExposed?: boolean;
