@@ -8,72 +8,91 @@ datasource db {
 }
 
 model User {
-  user_id  Int       @id @default(autoincrement())
+  userId   Int       @id @default(autoincrement())
   username String
   email    String    @unique
   password String
   Review   Review[]
   Comment  Comment[]
+  Image    Image[]
 }
 
 model Admin {
-  admin_id Int       @id @default(autoincrement())
+  adminId  Int       @id @default(autoincrement())
   username String
   email    String    @unique
   password String
   Comment  Comment[]
+  Image    Image[]
 }
 
 model Review {
-  review_id                Int      @id @default(autoincrement())
-  user_id                  Int
-  address                  String
-  sigungu                  String
-  detailed_address         String
-  residence_year           String
-  comprehensive_opinion    String
-  photos                   Json?
-  residence_proof_document String?
-  rating                   Float
-  usage_fee                Float
-  view_count               Int      @default(0)
-  status                   Status   @default(DRAFT)
-  is_exposed               Boolean  @default(true)
-  registration_date        DateTime @default(now())
-  // evaluation_item          EvaluationItem[]
+  reviewId               Int      @id @default(autoincrement())
+  userId                 Int
+  address                String
+  sigungu                String
+  detailedAddress        String
+  residenceYear          String
+  comprehensiveOpinion   String
+  residenceProofDocument String?
+  photos                 Json?
+  rating                 Float
+  usageFee               Float
+  viewCount              Int      @default(0)
+  status                 Status   @default(DRAFT)
+  isExposed              Boolean  @default(true)
+  registrationDate       DateTime @default(now())
 
-  User           User?            @relation(fields: [user_id], references: [user_id])
+  User           User?            @relation(fields: [userId], references: [userId])
   Comment        Comment[]
   EvaluationItem EvaluationItem[]
+  Image          Image[]
+}
+
+model Image {
+  imageId     Int      @id @default(autoincrement())
+  reviewId    Int
+  userId      Int
+  adminId     Int? 
+  imageUrl    String
+  isExposed   Boolean   @default(true)
+  processedAt DateTime
+ 
+  review      Review?   @relation(fields: [reviewId], references: [reviewId])
+  user        User     @relation(fields: [userId], references: [userId])
+  admin       Admin?   @relation(fields: [adminId], references: [adminId])
 }
 
 model Comment {
-  comment_id         Int       @id @default(autoincrement())
-  review_id          Int
-  user_id            Int
-  admin_id           Int?
-  comment            String
-  comment_date       DateTime  @default(now())
-  is_exposed         Boolean   @default(true)
-  admin_processed_at DateTime?
-  updated_at         DateTime  @updatedAt
-  review             Review    @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
-  user               User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  admin              Admin?    @relation(fields: [admin_id], references: [admin_id], onDelete: SetNull)
+  commentId        Int       @id @default(autoincrement())
+  reviewId         Int
+  userId           Int
+  adminId          Int?
+  comment          String
+  commentDate      DateTime  @default(now())
+  isExposed        Boolean   @default(true)
+  adminProcessedAt DateTime?
+  updatedAt        DateTime  @updatedAt
+  review           Review    @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  admin            Admin?    @relation(fields: [adminId], references: [adminId], onDelete: SetNull)
 }
 
 model EvaluationItem {
-  item_id       Int     @id @default(autoincrement())
-  review_id     Int
-  display_order Int
-  question_text String
-  score_0_text  String
-  score_1_text  String
-  score_3_text  String
-  score_5_text  String
-  price         Float
-  review        Review? @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
+  itemId       Int     @id @default(autoincrement())
+  reviewId     Int
+  displayOrder Int
+  questionText String
+  detailedDescription String
+  score0Text   String
+  score1Text   String
+  score3Text   String
+  score5Text   String
+  selectedScore Int? 
+  price        Float
+  review       Review? @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
 }
+
 
 enum Status {
   DRAFT

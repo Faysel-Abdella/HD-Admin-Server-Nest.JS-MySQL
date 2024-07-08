@@ -17,7 +17,7 @@ class EvaluationItemDto {
     example: 1,
   })
   @IsNumber()
-  display_order: number;
+  displayOrder: number;
 
   @ApiProperty({
     required: true,
@@ -26,7 +26,15 @@ class EvaluationItemDto {
     example: 'Question 1',
   })
   @IsString()
-  question_text: string;
+  questionText: string;
+
+  @ApiProperty({
+    required: true,
+    type: 'string',
+    description: 'Detail description of the item',
+    example: 'This item is designed for .............',
+  })
+  detailedDescription: string;
 
   @ApiProperty({
     required: true,
@@ -35,7 +43,7 @@ class EvaluationItemDto {
     example: 'Score 0',
   })
   @IsString()
-  score_0_text: string;
+  score0Text: string;
 
   @ApiProperty({
     required: true,
@@ -44,7 +52,7 @@ class EvaluationItemDto {
     example: 'Score 1',
   })
   @IsString()
-  score_1_text: string;
+  score1Text: string;
 
   @ApiProperty({
     required: true,
@@ -53,7 +61,7 @@ class EvaluationItemDto {
     example: 'Score 3',
   })
   @IsString()
-  score_3_text: string;
+  score3Text: string;
 
   @ApiProperty({
     required: true,
@@ -62,7 +70,7 @@ class EvaluationItemDto {
     example: 'Score 5',
   })
   @IsString()
-  score_5_text: string;
+  score5Text: string;
 
   @ApiProperty({
     required: true,
@@ -82,7 +90,7 @@ export class CreateReviewDto {
     example: 1,
   })
   @IsNotEmpty()
-  user_id: number | string;
+  userId: number | string;
 
   @ApiProperty({
     required: true,
@@ -112,7 +120,7 @@ export class CreateReviewDto {
   })
   @IsNotEmpty()
   @IsString()
-  detailed_address: string;
+  detailedAddress: string;
 
   @ApiProperty({
     required: true,
@@ -122,7 +130,7 @@ export class CreateReviewDto {
   })
   @IsNotEmpty()
   @IsString()
-  residence_year: string;
+  residenceYear: string;
 
   @ApiProperty({
     required: true,
@@ -132,7 +140,7 @@ export class CreateReviewDto {
   })
   @IsNotEmpty()
   @IsString()
-  comprehensive_opinion: string;
+  comprehensiveOpinion: string;
 
   @ApiProperty({
     required: true,
@@ -151,7 +159,7 @@ export class CreateReviewDto {
   })
   @IsNotEmpty()
   @IsString()
-  residence_proof_document: string;
+  residenceProofDocument: string;
 
   @ApiProperty({
     required: true,
@@ -196,7 +204,7 @@ export class CreateReviewDto {
     example: 100,
   })
   @IsNotEmpty()
-  usage_fee: number;
+  usageFee: number;
 
   @ApiProperty({
     required: true,
@@ -206,7 +214,7 @@ export class CreateReviewDto {
     default: 0,
   })
   @IsOptional()
-  view_count?: number;
+  viewCount?: number;
 
   @ApiProperty({
     required: true,
@@ -217,7 +225,7 @@ export class CreateReviewDto {
   })
   @IsBoolean()
   @IsOptional()
-  is_exposed: boolean;
+  isExposed: boolean;
 
   @ApiProperty({
     required: true,
@@ -229,5 +237,5 @@ export class CreateReviewDto {
   @IsArray()
   @ValidateNested({ each: true })
   @IsOptional()
-  evaluation_items: EvaluationItemDto[];
+  evaluationItems: EvaluationItemDto[];
 }

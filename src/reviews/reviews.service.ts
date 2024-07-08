@@ -16,28 +16,28 @@ export class ReviewsService {
    {
   "address": "Adama",
   "sigungu": "test",
-  "user_id": 1,
+  "userId": 1,
   "rating": 2,
-  "usage_fee": 30,
+  "usageFee": 30,
   ....other fields
   "photos": [file, file]
-  "evaluation_items": [
+  "evaluationItems": [
     {
-      "display_order": 2,
-      "question_text": "text",
-      "score_0_text": "0",
-      "score_1_text": "1",
-      "score_3_text": "3",
-      "score_5_text": "5",
+      "displayOrder": 2,
+      "questionText": "text",
+      "score0Text": "0",
+      "score1Text": "1",
+      "score3Text": "3",
+      "score5Text": "5",
       "price": 20
     },
      {
-      "display_order": 3,
-      "question_text": "text",
-      "score_0_text": "0",
-      "score_1_text": "1",
-      "score_3_text": "3",
-      "score_5_text": "5",
+      "displayOrder": 3,
+      "questionText": "text",
+      "score0Text": "0",
+      "score1Text": "1",
+      "score3Text": "3",
+      "score5Text": "5",
       "price": 20
     }
     ]
@@ -60,38 +60,38 @@ export class ReviewsService {
         ).then(async (photos) => {
           const review = await this.prisma.review.create({
             data: {
-              user_id: +createReviewDto.user_id,
+              userId: +createReviewDto.userId,
               address: createReviewDto.address,
               sigungu: createReviewDto.sigungu,
-              detailed_address: createReviewDto.detailed_address,
-              residence_year: createReviewDto.residence_year,
-              comprehensive_opinion: createReviewDto.comprehensive_opinion,
+              detailedAddress: createReviewDto.detailedAddress,
+              residenceYear: createReviewDto.residenceYear,
+              comprehensiveOpinion: createReviewDto.comprehensiveOpinion,
               rating: +createReviewDto.rating,
-              usage_fee: +createReviewDto.usage_fee,
-              residence_proof_document:
-                createReviewDto.residence_proof_document,
-              is_exposed: createReviewDto.is_exposed,
-              view_count: +createReviewDto.view_count,
-              registration_date: new Date(),
+              usageFee: +createReviewDto.usageFee,
+              residenceProofDocument: createReviewDto.residenceProofDocument,
+              isExposed: createReviewDto.isExposed,
+              viewCount: +createReviewDto.viewCount,
+              registrationDate: new Date(),
               status: createReviewDto.status,
               photos: { photosUrl: photos },
             },
           });
 
-          const reviewId = review.review_id;
-          const evaluation_items = createReviewDto.evaluation_items;
+          const reviewId = review.reviewId;
+          const evaluationItemsInput = createReviewDto.evaluationItems;
 
-          if (evaluation_items && evaluation_items.length > 0) {
-            const evaluationItems = evaluation_items.map((item) => {
+          if (evaluationItemsInput && evaluationItemsInput.length > 0) {
+            const evaluationItems = evaluationItemsInput.map((item) => {
               return {
-                display_order: item.display_order,
-                question_text: item.question_text,
-                score_0_text: item.score_0_text,
-                score_1_text: item.score_1_text,
-                score_3_text: item.score_3_text,
-                score_5_text: item.score_5_text,
+                displayOrder: item.displayOrder,
+                questionText: item.questionText,
+                detailedDescription: item.detailedDescription,
+                score0Text: item.score0Text,
+                score1Text: item.score1Text,
+                score3Text: item.score3Text,
+                score5Text: item.score5Text,
                 price: item.price,
-                review_id: reviewId,
+                reviewId: reviewId,
               };
             });
 
@@ -101,12 +101,12 @@ export class ReviewsService {
           }
 
           const createdReview = await this.prisma.review.findUnique({
-            where: { review_id: reviewId },
+            where: { reviewId: reviewId },
             include: {
               EvaluationItem: true,
               User: {
                 select: {
-                  user_id: true,
+                  userId: true,
                   username: true,
                   email: true,
                 },
@@ -124,37 +124,38 @@ export class ReviewsService {
         console.log('NO PHOTOS');
         const review = await this.prisma.review.create({
           data: {
-            user_id: +createReviewDto.user_id,
+            userId: +createReviewDto.userId,
             address: createReviewDto.address,
             sigungu: createReviewDto.sigungu,
-            detailed_address: createReviewDto.detailed_address,
-            residence_year: createReviewDto.residence_year,
-            comprehensive_opinion: createReviewDto.comprehensive_opinion,
+            detailedAddress: createReviewDto.detailedAddress,
+            residenceYear: createReviewDto.residenceYear,
+            comprehensiveOpinion: createReviewDto.comprehensiveOpinion,
             rating: +createReviewDto.rating,
-            usage_fee: +createReviewDto.usage_fee,
-            residence_proof_document: createReviewDto.residence_proof_document,
-            is_exposed: createReviewDto.is_exposed,
-            view_count: +createReviewDto.view_count,
-            registration_date: new Date(),
+            usageFee: +createReviewDto.usageFee,
+            residenceProofDocument: createReviewDto.residenceProofDocument,
+            isExposed: createReviewDto.isExposed,
+            viewCount: +createReviewDto.viewCount,
+            registrationDate: new Date(),
             status: createReviewDto.status,
             photos: { photosUrl: [] },
           },
         });
 
-        const reviewId = review.review_id;
-        const evaluation_items = createReviewDto.evaluation_items;
+        const reviewId = review.reviewId;
+        const evaluationItemsInput = createReviewDto.evaluationItems;
 
-        if (evaluation_items && evaluation_items.length > 0) {
-          const evaluationItems = evaluation_items.map((item) => {
+        if (evaluationItemsInput && evaluationItemsInput.length > 0) {
+          const evaluationItems = evaluationItemsInput.map((item) => {
             return {
-              display_order: item.display_order,
-              question_text: item.question_text,
-              score_0_text: item.score_0_text,
-              score_1_text: item.score_1_text,
-              score_3_text: item.score_3_text,
-              score_5_text: item.score_5_text,
+              displayOrder: item.displayOrder,
+              questionText: item.questionText,
+              detailedDescription: item.detailedDescription,
+              score0Text: item.score0Text,
+              score1Text: item.score1Text,
+              score3Text: item.score3Text,
+              score5Text: item.score5Text,
               price: item.price,
-              review_id: reviewId,
+              reviewId: reviewId,
             };
           });
 
@@ -164,12 +165,12 @@ export class ReviewsService {
         }
 
         const createdReview = await this.prisma.review.findUnique({
-          where: { review_id: reviewId },
+          where: { reviewId: reviewId },
           include: {
             EvaluationItem: true,
             User: {
               select: {
-                user_id: true,
+                userId: true,
                 username: true,
                 email: true,
               },
@@ -206,11 +207,11 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
@@ -219,7 +220,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -242,6 +243,8 @@ export class ReviewsService {
         statusCode: HttpStatus.OK,
         message: 'Reviews retrieved successfully',
         data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -258,7 +261,7 @@ export class ReviewsService {
     sortOrder?: string,
     username?: string,
   ) {
-    //  "신규등록 인증후기" === residence_proof_document not null & status === waiting
+    //  "신규등록 인증후기" === residenceProofDocument not null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
 
     const orderBy: any = {};
@@ -266,17 +269,17 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
-          residence_proof_document: { not: null },
+          residenceProofDocument: { not: null },
           status: 'WAITING',
           User: {
             username: username ? username.toLowerCase() : undefined,
@@ -289,7 +292,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -300,7 +303,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -317,7 +322,7 @@ export class ReviewsService {
     sortOrder?: string,
     username?: string,
   ) {
-    // "신규등록 미인증후기" === residence_proof_document null & status === waiting
+    // "신규등록 미인증후기" === residenceProofDocument null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
 
     const orderBy: any = {};
@@ -325,17 +330,17 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
-          residence_proof_document: null,
+          residenceProofDocument: null,
           status: 'WAITING',
           User: {
             username: username ? username.toLowerCase() : undefined,
@@ -348,7 +353,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -359,7 +364,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -376,7 +383,7 @@ export class ReviewsService {
     sortOrder?: string,
     username?: string,
   ) {
-    // "인증후기" === residence_proof_document not null & status === approved
+    // "인증후기" === residenceProofDocument not null & status === approved
     const skip = page ? (page - 1) * limit : 0;
 
     const orderBy: any = {};
@@ -384,17 +391,17 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
-          residence_proof_document: { not: null },
+          residenceProofDocument: { not: null },
           status: 'APPROVED',
           User: {
             username: username ? username.toLowerCase() : undefined,
@@ -407,7 +414,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -418,7 +425,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -435,7 +444,7 @@ export class ReviewsService {
     sortOrder?: string,
     username?: string,
   ) {
-    // "미인증후기" === residence_proof_document null & status === approved
+    // "미인증후기" === residenceProofDocument null & status === approved
     const skip = page ? (page - 1) * limit : 0;
 
     const orderBy: any = {};
@@ -443,17 +452,17 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
-          residence_proof_document: null,
+          residenceProofDocument: null,
           status: 'APPROVED',
           User: {
             username: username ? username.toLowerCase() : undefined,
@@ -466,7 +475,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -476,7 +485,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -501,15 +512,15 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
           status: 'REJECTED',
           User: {
@@ -523,7 +534,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -533,7 +544,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -558,15 +571,15 @@ export class ReviewsService {
     if (sortBy === 'rating') {
       orderBy.rating = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'usageFee') {
-      orderBy.usage_fee = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.usageFee = sortOrder === 'asc' ? 'asc' : 'desc';
     } else if (sortBy === 'viewCount') {
-      orderBy.view_count = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.viewCount = sortOrder === 'asc' ? 'asc' : 'desc';
     } else {
-      orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
     try {
-      const review = await this.prisma.review.findMany({
+      const reviews = await this.prisma.review.findMany({
         where: {
           status: {
             in: [
@@ -586,7 +599,7 @@ export class ReviewsService {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -597,7 +610,9 @@ export class ReviewsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
-        data: review,
+        data: reviews,
+        totalData: reviews.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -610,12 +625,12 @@ export class ReviewsService {
   async findOne(id: number) {
     try {
       const review = await this.prisma.review.findUnique({
-        where: { review_id: id },
+        where: { reviewId: id },
         include: {
           EvaluationItem: true,
           User: {
             select: {
-              user_id: true,
+              userId: true,
               username: true,
               email: true,
             },
@@ -647,7 +662,7 @@ export class ReviewsService {
   async update(id: number, updateReviewDto: UpdateReviewDto) {
     try {
       const updatedReview = await this.prisma.review.findUnique({
-        where: { review_id: id },
+        where: { reviewId: id },
       });
 
       if (!updatedReview) {
@@ -658,52 +673,53 @@ export class ReviewsService {
       }
 
       await this.prisma.review.update({
-        where: { review_id: id },
+        where: { reviewId: id },
         data: {
           address: updateReviewDto.address || updatedReview.address,
 
           sigungu: updateReviewDto.sigungu || updatedReview.sigungu,
 
-          detailed_address:
-            updateReviewDto.detailed_address || updatedReview.detailed_address,
+          detailedAddress:
+            updateReviewDto.detailedAddress || updatedReview.detailedAddress,
 
-          residence_year:
-            updateReviewDto.residence_year || updatedReview.residence_year,
+          residenceYear:
+            updateReviewDto.residenceYear || updatedReview.residenceYear,
 
-          comprehensive_opinion:
-            updateReviewDto.comprehensive_opinion ||
-            updatedReview.comprehensive_opinion,
+          comprehensiveOpinion:
+            updateReviewDto.comprehensiveOpinion ||
+            updatedReview.comprehensiveOpinion,
 
           rating: updateReviewDto.rating || updatedReview.rating,
 
-          usage_fee: updateReviewDto.usage_fee || updatedReview.usage_fee,
+          usageFee: updateReviewDto.usageFee || updatedReview.usageFee,
 
-          residence_proof_document:
-            updateReviewDto.residence_proof_document ||
-            updatedReview.residence_proof_document,
+          residenceProofDocument:
+            updateReviewDto.residenceProofDocument ||
+            updatedReview.residenceProofDocument,
 
-          is_exposed: updateReviewDto.is_exposed || updatedReview.is_exposed,
+          isExposed: updateReviewDto.isExposed || updatedReview.isExposed,
 
-          view_count: updateReviewDto.view_count || updatedReview.view_count,
+          viewCount: updateReviewDto.viewCount || updatedReview.viewCount,
 
           status: updateReviewDto.status || updatedReview.status,
         },
       });
 
-      if (updateReviewDto.evaluation_items) {
+      if (updateReviewDto.evaluationItems) {
         await this.prisma.evaluationItem.deleteMany({
-          where: { review_id: id },
+          where: { reviewId: id },
         });
-        const evaluationItems = updateReviewDto.evaluation_items.map((item) => {
+        const evaluationItems = updateReviewDto.evaluationItems.map((item) => {
           return {
-            display_order: item.display_order,
-            question_text: item.question_text,
-            score_0_text: item.score_0_text,
-            score_1_text: item.score_1_text,
-            score_3_text: item.score_3_text,
-            score_5_text: item.score_5_text,
+            displayOrder: item.displayOrder,
+            questionText: item.questionText,
+            detailedDescription: item.detailedDescription,
+            score0Text: item.score0Text,
+            score1Text: item.score1Text,
+            score3Text: item.score3Text,
+            score5Text: item.score5Text,
             price: item.price,
-            review_id: id,
+            reviewId: id,
           };
         });
 
@@ -716,12 +732,12 @@ export class ReviewsService {
         statusCode: HttpStatus.CREATED,
         message: 'Review Updated Successfully',
         data: await this.prisma.review.findUnique({
-          where: { review_id: id },
+          where: { reviewId: id },
           include: {
             EvaluationItem: true,
             User: {
               select: {
-                user_id: true,
+                userId: true,
                 username: true,
                 email: true,
               },
@@ -740,7 +756,7 @@ export class ReviewsService {
   async remove(id: number) {
     try {
       const deletedReview = await this.prisma.review.findUnique({
-        where: { review_id: id },
+        where: { reviewId: id },
       });
 
       if (!deletedReview) {
@@ -751,7 +767,7 @@ export class ReviewsService {
       }
 
       const review = await this.prisma.review.delete({
-        where: { review_id: id },
+        where: { reviewId: id },
       });
 
       return {

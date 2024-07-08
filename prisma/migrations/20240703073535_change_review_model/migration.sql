@@ -12,12 +12,12 @@
   - You are about to drop the column `sigungu` on the `Review` table. All the data in the column will be lost.
   - You are about to drop the column `status` on the `Review` table. All the data in the column will be lost.
   - You are about to drop the column `usage_fee` on the `Review` table. All the data in the column will be lost.
-  - You are about to drop the column `user_id` on the `Review` table. All the data in the column will be lost.
+  - You are about to drop the column `userId` on the `Review` table. All the data in the column will be lost.
   - You are about to drop the column `view_count` on the `Review` table. All the data in the column will be lost.
 
 */
 -- DropForeignKey
-ALTER TABLE `Review` DROP FOREIGN KEY `Review_user_id_fkey`;
+ALTER TABLE `Review` DROP FOREIGN KEY `Review_userId_fkey`;
 
 -- AlterTable
 ALTER TABLE `Review` DROP COLUMN `comprehensive_opinion`,
@@ -31,9 +31,9 @@ ALTER TABLE `Review` DROP COLUMN `comprehensive_opinion`,
     DROP COLUMN `sigungu`,
     DROP COLUMN `status`,
     DROP COLUMN `usage_fee`,
-    DROP COLUMN `user_id`,
+    DROP COLUMN `userId`,
     DROP COLUMN `view_count`,
-    ADD COLUMN `userUser_id` INTEGER NULL;
+    ADD COLUMN `useruserId` INTEGER NULL;
 
 -- AddForeignKey
-ALTER TABLE `Review` ADD CONSTRAINT `Review_userUser_id_fkey` FOREIGN KEY (`userUser_id`) REFERENCES `User`(`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Review` ADD CONSTRAINT `Review_useruserId_fkey` FOREIGN KEY (`useruserId`) REFERENCES `User`(`userId`) ON DELETE SET NULL ON UPDATE CASCADE;

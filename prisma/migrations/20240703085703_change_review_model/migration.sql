@@ -6,7 +6,7 @@
   - Added the required column `rating` to the `Review` table without a default value. This is not possible if the table is not empty.
   - Added the required column `sigungu` to the `Review` table without a default value. This is not possible if the table is not empty.
   - Added the required column `usage_fee` to the `Review` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `user_id` to the `Review` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `userId` to the `Review` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
@@ -24,5 +24,5 @@ ALTER TABLE `Review` ADD COLUMN `address` VARCHAR(191) NOT NULL,
     ADD COLUMN `sigungu` VARCHAR(191) NOT NULL,
     ADD COLUMN `status` ENUM('DRAFT', 'WAITING', 'APPROVED', 'REJECTED', 'WAITING_FOR_UPDATE', 'WAITING_FOR_RESIDENCE_VERIFICATION', 'WAITING_AFTER_REJECTION') NOT NULL DEFAULT 'DRAFT',
     ADD COLUMN `usage_fee` DOUBLE NOT NULL,
-    ADD COLUMN `user_id` INTEGER NOT NULL,
+    ADD COLUMN `userId` INTEGER NOT NULL,
     ADD COLUMN `view_count` INTEGER NOT NULL DEFAULT 0;

@@ -10,7 +10,7 @@ export class UsersService {
   async findAll() {
     const users = await this.prisma.user.findMany({
       select: {
-        user_id: true,
+        userId: true,
         username: true,
         email: true,
       },
@@ -26,10 +26,10 @@ export class UsersService {
   async findOne(id: number) {
     const user = await this.prisma.user.findUnique({
       where: {
-        user_id: id,
+        userId: id,
       },
       select: {
-        user_id: true,
+        userId: true,
         username: true,
         email: true,
       },
@@ -52,7 +52,7 @@ export class UsersService {
   async remove(id: number) {
     const user = await this.prisma.user.findUnique({
       where: {
-        user_id: id,
+        userId: id,
       },
     });
 
@@ -63,7 +63,7 @@ export class UsersService {
       };
     }
 
-    await this.prisma.user.delete({ where: { user_id: id } });
+    await this.prisma.user.delete({ where: { userId: id } });
 
     return {
       statusCode: HttpStatus.OK,

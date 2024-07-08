@@ -17,7 +17,7 @@ export class UpdateCommentDto {
   })
   @IsOptional()
   @IsInt()
-  admin_id?: number;
+  adminId?: number;
 
   @ApiProperty({
     description: 'The content of the comment',

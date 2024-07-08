@@ -33,7 +33,7 @@ export class AuthService {
       if (user) {
         const payload = {
           email: registerDto.email,
-          sub: user.user_id,
+          sub: user.userId,
           username: user.username,
         };
         return {
@@ -75,7 +75,7 @@ export class AuthService {
       if (passwordMatch) {
         const payload = {
           email: loginDto.email,
-          sub: user.user_id,
+          sub: user.userId,
           username: user.username,
         };
         return {
@@ -101,7 +101,7 @@ export class AuthService {
       if (admin) {
         const payload = {
           email: registerDto.email,
-          sub: admin.admin_id,
+          sub: admin.adminId,
           username: admin.username,
         };
         return {
@@ -143,7 +143,7 @@ export class AuthService {
       if (passwordMatch) {
         const payload = {
           email: loginDto.email,
-          sub: admin.admin_id,
+          sub: admin.adminId,
           username: admin.username,
         };
         return {

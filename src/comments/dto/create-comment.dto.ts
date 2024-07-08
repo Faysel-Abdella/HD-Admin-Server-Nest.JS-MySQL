@@ -15,7 +15,7 @@ export class CreateCommentDto {
     required: true,
   })
   @IsInt()
-  review_id: number;
+  reviewId: number;
 
   @ApiProperty({
     description: 'The ID of the user who made the comment',
@@ -23,7 +23,7 @@ export class CreateCommentDto {
     required: true,
   })
   @IsInt()
-  user_id: number;
+  userId: number;
 
   @ApiProperty({
     description: 'The ID of the admin who processed the comment',
@@ -32,7 +32,7 @@ export class CreateCommentDto {
   })
   @IsOptional()
   @IsInt()
-  admin_id?: number;
+  adminId?: number;
 
   @ApiProperty({
     description: 'The content of the comment',

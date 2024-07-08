@@ -9,7 +9,7 @@ export class CommentsService {
 
   async create(createCommentDto: CreateCommentDto) {
     const review = await this.prisma.review.findUnique({
-      where: { review_id: createCommentDto.review_id },
+      where: { reviewId: createCommentDto.reviewId },
     });
 
     if (!review) {
@@ -51,6 +51,8 @@ export class CommentsService {
         statusCode: HttpStatus.OK,
         message: 'Comments retrieved successfully',
         data: comments,
+        totalData: comments.length,
+        page: page ? page : 1,
       };
     } catch (error) {
       return {
@@ -63,7 +65,7 @@ export class CommentsService {
   async findOne(id: number) {
     try {
       const comment = await this.prisma.comment.findUnique({
-        where: { comment_id: id },
+        where: { commentId: id },
       });
 
       if (!comment) {
@@ -89,7 +91,7 @@ export class CommentsService {
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
     const updatedComment = await this.prisma.comment.findUnique({
-      where: { comment_id: id },
+      where: { commentId: id },
     });
 
     if (!updatedComment) {
@@ -100,7 +102,7 @@ export class CommentsService {
     }
     try {
       const comment = await this.prisma.comment.update({
-        where: { comment_id: id },
+        where: { commentId: id },
         data: {
           ...updatedComment,
           ...updateCommentDto,
@@ -122,7 +124,7 @@ export class CommentsService {
 
   async remove(id: number) {
     const deleted = await this.prisma.comment.findUnique({
-      where: { comment_id: id },
+      where: { commentId: id },
     });
 
     if (!deleted) {
@@ -134,7 +136,7 @@ export class CommentsService {
 
     try {
       const comment = await this.prisma.comment.delete({
-        where: { comment_id: id },
+        where: { commentId: id },
       });
 
       return {
