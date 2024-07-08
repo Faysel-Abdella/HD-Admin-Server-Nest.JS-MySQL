@@ -8,14 +8,23 @@ export class CommentsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createCommentDto: CreateCommentDto) {
-    const comment = await this.prisma.comment.create({
-      data: createCommentDto,
-    });
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Comment created successfully',
-      data: comment,
-    };
+    try {
+      const comment = await this.prisma.comment.create({
+        data: createCommentDto,
+      });
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Comment created successfully',
+        data: comment,
+      };
+    } catch (error) {
+      console.log('Failed to add a comment');
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Failed to add a comment (probably Invalid review_id)',
+      };
+    }
   }
 
   async findAll(page?: number, limit?: number) {

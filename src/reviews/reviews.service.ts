@@ -50,13 +50,78 @@ export class ReviewsService {
   ) {
     let uploadedData;
 
-    if (photos && photos.length > 0) {
-      uploadedData = await Promise.all(
-        photos.map(async (photo) => {
-          const photoUrl = await this.FileUploadService.uploadPhoto(photo);
-          return { url: photoUrl };
-        }),
-      ).then(async (photos) => {
+    try {
+      if (photos && photos.length > 0) {
+        uploadedData = await Promise.all(
+          photos.map(async (photo) => {
+            const photoUrl = await this.FileUploadService.uploadPhoto(photo);
+            return { url: photoUrl };
+          }),
+        ).then(async (photos) => {
+          const review = await this.prisma.review.create({
+            data: {
+              user_id: +createReviewDto.user_id,
+              address: createReviewDto.address,
+              sigungu: createReviewDto.sigungu,
+              detailed_address: createReviewDto.detailed_address,
+              residence_year: createReviewDto.residence_year,
+              comprehensive_opinion: createReviewDto.comprehensive_opinion,
+              rating: +createReviewDto.rating,
+              usage_fee: +createReviewDto.usage_fee,
+              residence_proof_document:
+                createReviewDto.residence_proof_document,
+              is_exposed: createReviewDto.is_exposed,
+              view_count: +createReviewDto.view_count,
+              registration_date: new Date(),
+              status: createReviewDto.status,
+              photos: { photosUrl: photos },
+            },
+          });
+
+          const reviewId = review.review_id;
+          const evaluation_items = createReviewDto.evaluation_items;
+
+          if (evaluation_items && evaluation_items.length > 0) {
+            const evaluationItems = evaluation_items.map((item) => {
+              return {
+                display_order: item.display_order,
+                question_text: item.question_text,
+                score_0_text: item.score_0_text,
+                score_1_text: item.score_1_text,
+                score_3_text: item.score_3_text,
+                score_5_text: item.score_5_text,
+                price: item.price,
+                review_id: reviewId,
+              };
+            });
+
+            await this.prisma.evaluationItem.createMany({
+              data: evaluationItems,
+            });
+          }
+
+          const createdReview = await this.prisma.review.findUnique({
+            where: { review_id: reviewId },
+            include: {
+              EvaluationItem: true,
+              User: {
+                select: {
+                  user_id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+            },
+          });
+
+          return {
+            statusCode: HttpStatus.CREATED,
+            message: 'Review created successfully',
+            data: createdReview,
+          };
+        });
+      } else {
+        console.log('NO PHOTOS');
         const review = await this.prisma.review.create({
           data: {
             user_id: +createReviewDto.user_id,
@@ -72,7 +137,7 @@ export class ReviewsService {
             view_count: +createReviewDto.view_count,
             registration_date: new Date(),
             status: createReviewDto.status,
-            photos: { photosUrl: photos },
+            photos: { photosUrl: [] },
           },
         });
 
@@ -114,71 +179,14 @@ export class ReviewsService {
 
         return {
           statusCode: HttpStatus.CREATED,
-          message: 'Review created successfully',
+          message: 'Review created successfully without photos',
           data: createdReview,
         };
-      });
-    } else {
-      console.log('NO PHOTOS');
-      const review = await this.prisma.review.create({
-        data: {
-          user_id: +createReviewDto.user_id,
-          address: createReviewDto.address,
-          sigungu: createReviewDto.sigungu,
-          detailed_address: createReviewDto.detailed_address,
-          residence_year: createReviewDto.residence_year,
-          comprehensive_opinion: createReviewDto.comprehensive_opinion,
-          rating: +createReviewDto.rating,
-          usage_fee: +createReviewDto.usage_fee,
-          residence_proof_document: createReviewDto.residence_proof_document,
-          is_exposed: createReviewDto.is_exposed,
-          view_count: +createReviewDto.view_count,
-          registration_date: new Date(),
-          status: createReviewDto.status,
-          photos: { photosUrl: [] },
-        },
-      });
-
-      const reviewId = review.review_id;
-      const evaluation_items = createReviewDto.evaluation_items;
-
-      if (evaluation_items && evaluation_items.length > 0) {
-        const evaluationItems = evaluation_items.map((item) => {
-          return {
-            display_order: item.display_order,
-            question_text: item.question_text,
-            score_0_text: item.score_0_text,
-            score_1_text: item.score_1_text,
-            score_3_text: item.score_3_text,
-            score_5_text: item.score_5_text,
-            price: item.price,
-            review_id: reviewId,
-          };
-        });
-
-        await this.prisma.evaluationItem.createMany({
-          data: evaluationItems,
-        });
       }
-
-      const createdReview = await this.prisma.review.findUnique({
-        where: { review_id: reviewId },
-        include: {
-          EvaluationItem: true,
-          User: {
-            select: {
-              user_id: true,
-              username: true,
-              email: true,
-            },
-          },
-        },
-      });
-
+    } catch (error) {
       return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Review created successfully without photos',
-        data: createdReview,
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
       };
     }
   }
@@ -205,35 +213,42 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const reviews = await this.prisma.review.findMany({
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const reviews = await this.prisma.review.findMany({
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
           },
         },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy, // { property: 'asc' | 'desc' }
-      where: {
-        address: {
-          contains: address ? address.toLowerCase() : undefined,
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy, // { property: 'asc' | 'desc' }
+        where: {
+          address: {
+            contains: address ? address.toLowerCase() : undefined,
+          },
+          status: address ? 'APPROVED' : undefined,
+          User: {
+            username: username ? username.toLowerCase() : undefined,
+          },
         },
-        status: address ? 'APPROVED' : undefined,
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-    });
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Reviews retrieved successfully',
-      data: reviews,
-    };
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Reviews retrieved successfully',
+        data: reviews,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findNewRegistrationVerificationReview(
@@ -258,34 +273,41 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        residence_proof_document: { not: null },
-        status: 'WAITING',
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          residence_proof_document: { not: null },
+          status: 'WAITING',
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findNewRegistrationUnVerificationReview(
@@ -310,34 +332,41 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        residence_proof_document: null,
-        status: 'WAITING',
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          residence_proof_document: null,
+          status: 'WAITING',
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findCertificationReview(
@@ -362,34 +391,41 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        residence_proof_document: { not: null },
-        status: 'APPROVED',
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          residence_proof_document: { not: null },
+          status: 'APPROVED',
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findUnverifiedReview(
@@ -414,33 +450,40 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        residence_proof_document: null,
-        status: 'APPROVED',
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          residence_proof_document: null,
+          status: 'APPROVED',
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findPetReview(
@@ -465,32 +508,39 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        status: 'REJECTED',
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          status: 'REJECTED',
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findReRegistrationReview(
@@ -515,142 +565,51 @@ export class ReviewsService {
       orderBy.registration_date = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
-    const review = await this.prisma.review.findMany({
-      where: {
-        status: {
-          in: [
-            'WAITING_FOR_UPDATE',
-            'WAITING_FOR_RESIDENCE_VERIFICATION',
-            'WAITING_AFTER_REJECTION',
-          ],
-        },
-        User: {
-          username: username ? username.toLowerCase() : undefined,
-        },
-      },
-      skip: skip,
-      ...(limit && { take: limit }),
-      orderBy: orderBy,
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
+    try {
+      const review = await this.prisma.review.findMany({
+        where: {
+          status: {
+            in: [
+              'WAITING_FOR_UPDATE',
+              'WAITING_FOR_RESIDENCE_VERIFICATION',
+              'WAITING_AFTER_REJECTION',
+            ],
+          },
+          User: {
+            username: username ? username.toLowerCase() : undefined,
           },
         },
-      },
-    });
+        skip: skip,
+        ...(limit && { take: limit }),
+        orderBy: orderBy,
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async findOne(id: number) {
-    const review = await this.prisma.review.findUnique({
-      where: { review_id: id },
-      include: {
-        EvaluationItem: true,
-        User: {
-          select: {
-            user_id: true,
-            username: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!review) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: 'Review not found',
-        data: review,
-      };
-    }
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review retrieved successfully',
-      data: review,
-    };
-  }
-
-  async update(id: number, updateReviewDto: UpdateReviewDto) {
-    const updatedReview = await this.prisma.review.findUnique({
-      where: { review_id: id },
-    });
-
-    if (!updatedReview) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: 'Review not found (Invalid Id)',
-      };
-    }
-
-    await this.prisma.review.update({
-      where: { review_id: id },
-      data: {
-        address: updateReviewDto.address || updatedReview.address,
-
-        sigungu: updateReviewDto.sigungu || updatedReview.sigungu,
-
-        detailed_address:
-          updateReviewDto.detailed_address || updatedReview.detailed_address,
-
-        residence_year:
-          updateReviewDto.residence_year || updatedReview.residence_year,
-
-        comprehensive_opinion:
-          updateReviewDto.comprehensive_opinion ||
-          updatedReview.comprehensive_opinion,
-
-        rating: updateReviewDto.rating || updatedReview.rating,
-
-        usage_fee: updateReviewDto.usage_fee || updatedReview.usage_fee,
-
-        residence_proof_document:
-          updateReviewDto.residence_proof_document ||
-          updatedReview.residence_proof_document,
-
-        is_exposed: updateReviewDto.is_exposed || updatedReview.is_exposed,
-
-        view_count: updateReviewDto.view_count || updatedReview.view_count,
-
-        status: updateReviewDto.status || updatedReview.status,
-      },
-    });
-
-    if (updateReviewDto.evaluation_items) {
-      await this.prisma.evaluationItem.deleteMany({
-        where: { review_id: id },
-      });
-      const evaluationItems = updateReviewDto.evaluation_items.map((item) => {
-        return {
-          display_order: item.display_order,
-          question_text: item.question_text,
-          score_0_text: item.score_0_text,
-          score_1_text: item.score_1_text,
-          score_3_text: item.score_3_text,
-          score_5_text: item.score_5_text,
-          price: item.price,
-          review_id: id,
-        };
-      });
-
-      await this.prisma.evaluationItem.createMany({
-        data: evaluationItems,
-      });
-    }
-
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Review Updated Successfully',
-      data: await this.prisma.review.findUnique({
+    try {
+      const review = await this.prisma.review.findUnique({
         where: { review_id: id },
         include: {
           EvaluationItem: true,
@@ -662,29 +621,148 @@ export class ReviewsService {
             },
           },
         },
-      }),
-    };
+      });
+
+      if (!review) {
+        return {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Review not found',
+          data: review,
+        };
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Review retrieved successfully',
+        data: review,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
+  }
+
+  async update(id: number, updateReviewDto: UpdateReviewDto) {
+    try {
+      const updatedReview = await this.prisma.review.findUnique({
+        where: { review_id: id },
+      });
+
+      if (!updatedReview) {
+        return {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Review not found (Invalid Id)',
+        };
+      }
+
+      await this.prisma.review.update({
+        where: { review_id: id },
+        data: {
+          address: updateReviewDto.address || updatedReview.address,
+
+          sigungu: updateReviewDto.sigungu || updatedReview.sigungu,
+
+          detailed_address:
+            updateReviewDto.detailed_address || updatedReview.detailed_address,
+
+          residence_year:
+            updateReviewDto.residence_year || updatedReview.residence_year,
+
+          comprehensive_opinion:
+            updateReviewDto.comprehensive_opinion ||
+            updatedReview.comprehensive_opinion,
+
+          rating: updateReviewDto.rating || updatedReview.rating,
+
+          usage_fee: updateReviewDto.usage_fee || updatedReview.usage_fee,
+
+          residence_proof_document:
+            updateReviewDto.residence_proof_document ||
+            updatedReview.residence_proof_document,
+
+          is_exposed: updateReviewDto.is_exposed || updatedReview.is_exposed,
+
+          view_count: updateReviewDto.view_count || updatedReview.view_count,
+
+          status: updateReviewDto.status || updatedReview.status,
+        },
+      });
+
+      if (updateReviewDto.evaluation_items) {
+        await this.prisma.evaluationItem.deleteMany({
+          where: { review_id: id },
+        });
+        const evaluationItems = updateReviewDto.evaluation_items.map((item) => {
+          return {
+            display_order: item.display_order,
+            question_text: item.question_text,
+            score_0_text: item.score_0_text,
+            score_1_text: item.score_1_text,
+            score_3_text: item.score_3_text,
+            score_5_text: item.score_5_text,
+            price: item.price,
+            review_id: id,
+          };
+        });
+
+        await this.prisma.evaluationItem.createMany({
+          data: evaluationItems,
+        });
+      }
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Review Updated Successfully',
+        data: await this.prisma.review.findUnique({
+          where: { review_id: id },
+          include: {
+            EvaluationItem: true,
+            User: {
+              select: {
+                user_id: true,
+                username: true,
+                email: true,
+              },
+            },
+          },
+        }),
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   async remove(id: number) {
-    const deletedReview = await this.prisma.review.findUnique({
-      where: { review_id: id },
-    });
+    try {
+      const deletedReview = await this.prisma.review.findUnique({
+        where: { review_id: id },
+      });
 
-    if (!deletedReview) {
+      if (!deletedReview) {
+        return {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Review not found (Invalid Id)',
+        };
+      }
+
+      const review = await this.prisma.review.delete({
+        where: { review_id: id },
+      });
+
       return {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: 'Review not found (Invalid Id)',
+        statusCode: HttpStatus.OK,
+        message: 'Review deleted successfully',
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
       };
     }
-
-    const review = await this.prisma.review.delete({
-      where: { review_id: id },
-    });
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Review deleted successfully',
-    };
   }
 }
