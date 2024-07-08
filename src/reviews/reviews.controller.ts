@@ -21,6 +21,14 @@ import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  sortByQueryOption,
+  sortOrderOption,
+  pageOption,
+  limitOption,
+  addressOption,
+  usernameOption,
+} from '../utils/queryOptions';
 
 @Controller('admin/reviews')
 export class ReviewsController {
@@ -41,32 +49,12 @@ export class ReviewsController {
   }
 
   @Get()
-  @ApiQuery({
-    name: 'sortOrder',
-    enum: ['asc', 'desc'],
-    required: false,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    enum: ['rating', 'usageFee', 'viewCount'],
-    required: false,
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'address',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'username',
-    required: false,
-  })
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(addressOption)
+  @ApiQuery(usernameOption)
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -85,6 +73,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('new-registration-verification-review')
   findNewRegistrationVerificationReview(
     @Query('page') page?: number,
@@ -102,6 +95,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('new-registration-un-verification-review')
   findNewRegistrationUnVerificationReview(
     @Query('page') page?: number,
@@ -119,6 +117,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('certification-review')
   findCertificationReview(
     @Query('page') page?: number,
@@ -136,6 +139,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('unverified-review')
   findUnverifiedReview(
     @Query('page') page?: number,
@@ -153,6 +161,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('pet-review')
   findPetReview(
     @Query('page') page?: number,
@@ -170,6 +183,11 @@ export class ReviewsController {
     );
   }
 
+  @ApiQuery(sortOrderOption)
+  @ApiQuery(sortByQueryOption)
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
+  @ApiQuery(usernameOption)
   @Get('re-registration-review')
   findReRegistrationReview(
     @Query('page') page?: number,
