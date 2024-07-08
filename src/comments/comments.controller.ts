@@ -11,6 +11,8 @@ import {
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { pageOption, limitOption } from '../utils/queryOptions';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('admin/comments')
 export class CommentsController {
@@ -22,6 +24,8 @@ export class CommentsController {
   }
 
   @Get()
+  @ApiQuery(pageOption)
+  @ApiQuery(limitOption)
   findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
     return this.commentsService.findAll(+page, +limit);
   }

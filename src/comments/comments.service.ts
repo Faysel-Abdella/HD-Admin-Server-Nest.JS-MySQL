@@ -69,7 +69,7 @@ export class CommentsService {
       if (!comment) {
         return {
           statusCode: HttpStatus.NOT_FOUND,
-          message: 'Comment not found',
+          message: 'Comment not found (Invalid Id)',
           data: comment,
         };
       }

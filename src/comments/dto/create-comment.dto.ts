@@ -10,10 +10,6 @@ import {
 
 export class CreateCommentDto {
   @ApiProperty({
-    description: 'The unique identifier of the comment',
-    example: 1,
-  })
-  @ApiProperty({
     description: 'The ID of the associated review',
     example: 18,
     required: true,

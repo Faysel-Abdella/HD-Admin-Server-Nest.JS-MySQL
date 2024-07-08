@@ -11,12 +11,7 @@ import {
   UploadedFiles,
   BadRequestException,
 } from '@nestjs/common';
-import {
-  ApiProperty,
-  ApiQueryOptions,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiQuery } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
