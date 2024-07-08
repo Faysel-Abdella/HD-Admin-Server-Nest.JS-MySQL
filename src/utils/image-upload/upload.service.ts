@@ -7,11 +7,10 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class FileUploadService {
   private uploadDirectory: string;
-  private serverUrl: string;
+  private serverUrl: string = process.env.SERVER_URL;
 
   constructor(private configService: ConfigService) {
     this.uploadDirectory = 'uploads/images';
-    this.serverUrl = this.configService.get('SERVER_URL');
   }
 
   async uploadPhoto(photo: Express.Multer.File): Promise<string> {

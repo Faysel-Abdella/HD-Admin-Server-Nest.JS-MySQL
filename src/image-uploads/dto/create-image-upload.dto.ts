@@ -44,6 +44,7 @@ export class CreateImageUploadDto {
     example: '[image1.jpg, image2.jpg]',
   })
   @IsNotEmpty()
+  @IsOptional()
   images: any;
 
   @ApiProperty({

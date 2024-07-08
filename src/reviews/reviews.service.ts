@@ -134,6 +134,11 @@ export class ReviewsService {
               email: true,
             },
           },
+          Image: {
+            select: {
+              imageId: true,
+            },
+          },
         },
         skip: skip,
         ...(limit && { take: limit }),

@@ -15,32 +15,31 @@ export class ImageUploadsService {
     createImageUploadDto: CreateImageUploadDto,
     images: Express.Multer.File[],
   ) {
-    let uploadedData;
-
     try {
       if (images && images.length > 0) {
         console.log('UPLOADING STARTED');
-        uploadedData = await Promise.all(
+        const uploadedData = await Promise.all(
           images.map(async (photo) => {
             const photoUrl = await this.FileUploadService.uploadPhoto(photo);
             return { url: photoUrl };
           }),
-        ).then(async (photos) => {
-          const uploadedImage = await this.prisma.image.create({
-            data: {
-              reviewId: +createImageUploadDto.reviewId,
-              userId: +createImageUploadDto.userId,
-              adminId: +createImageUploadDto.adminId,
-              images: { photos: photos },
-              isExposed: createImageUploadDto.isExposed,
-            },
-          });
-          return {
-            statusCode: HttpStatus.CREATED,
-            message: 'Photos uploaded successfully',
-            data: uploadedImage,
-          };
+        );
+
+        const uploadedImage = await this.prisma.image.create({
+          data: {
+            reviewId: +createImageUploadDto.reviewId,
+            userId: +createImageUploadDto.userId,
+            adminId: +createImageUploadDto.adminId,
+            images: { imagesUrl: uploadedData },
+            isExposed: createImageUploadDto.isExposed,
+          },
         });
+
+        return {
+          statusCode: HttpStatus.CREATED,
+          message: 'Photos uploaded successfully',
+          data: uploadedImage,
+        };
       } else {
         return {
           statusCode: HttpStatus.BAD_REQUEST,
