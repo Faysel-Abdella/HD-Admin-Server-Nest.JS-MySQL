@@ -13,9 +13,6 @@ export class CreateCommentDto {
     description: 'The unique identifier of the comment',
     example: 1,
   })
-  @IsInt()
-  comment_id: number;
-
   @ApiProperty({
     description: 'The ID of the associated review',
     example: 18,
