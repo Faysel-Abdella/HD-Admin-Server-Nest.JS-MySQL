@@ -100,7 +100,16 @@ export class ReviewsService {
 
         const createdReview = await this.prisma.review.findUnique({
           where: { review_id: reviewId },
-          include: { EvaluationItem: true, User: true },
+          include: {
+            EvaluationItem: true,
+            User: {
+              select: {
+                user_id: true,
+                username: true,
+                email: true,
+              },
+            },
+          },
         });
 
         return {
@@ -154,7 +163,16 @@ export class ReviewsService {
 
       const createdReview = await this.prisma.review.findUnique({
         where: { review_id: reviewId },
-        include: { EvaluationItem: true, User: true },
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
       });
 
       return {
@@ -188,10 +206,19 @@ export class ReviewsService {
     }
 
     const reviews = await this.prisma.review.findMany({
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
       skip: skip,
       ...(limit && { take: limit }),
-      orderBy: orderBy,
+      orderBy: orderBy, // { property: 'asc' | 'desc' }
       where: {
         address: {
           contains: address ? address.toLowerCase() : undefined,
@@ -242,7 +269,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return {
@@ -285,7 +321,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return {
@@ -328,7 +373,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return {
@@ -371,7 +425,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
     return {
       statusCode: HttpStatus.OK,
@@ -412,7 +475,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
     return {
       statusCode: HttpStatus.OK,
@@ -459,7 +531,16 @@ export class ReviewsService {
       skip: skip,
       ...(limit && { take: limit }),
       orderBy: orderBy,
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return {
@@ -472,7 +553,16 @@ export class ReviewsService {
   async findOne(id: number) {
     const review = await this.prisma.review.findUnique({
       where: { review_id: id },
-      include: { EvaluationItem: true, User: true },
+      include: {
+        EvaluationItem: true,
+        User: {
+          select: {
+            user_id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     if (!review) {
@@ -536,7 +626,16 @@ export class ReviewsService {
       message: 'Review Updated Successfully',
       data: await this.prisma.review.findUnique({
         where: { review_id: id },
-        include: { EvaluationItem: true, User: true },
+        include: {
+          EvaluationItem: true,
+          User: {
+            select: {
+              user_id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
       }),
     };
   }
