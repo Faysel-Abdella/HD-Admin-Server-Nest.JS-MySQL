@@ -33,7 +33,7 @@ model Review {
   residence_year           String
   comprehensive_opinion    String
   photos                   Json?
-  residence_proof_document String
+  residence_proof_document String?
   rating                   Float
   usage_fee                Float
   view_count               Int      @default(0)
