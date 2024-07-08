@@ -614,11 +614,25 @@ export class ReviewsService {
     });
 
     if (updateReviewDto.evaluation_items) {
-      const updatedEvaluationItems =
-        await this.prisma.evaluationItem.updateMany({
-          where: { review_id: id },
-          data: updateReviewDto.evaluation_items,
-        });
+      await this.prisma.evaluationItem.deleteMany({
+        where: { review_id: id },
+      });
+      const evaluationItems = updateReviewDto.evaluation_items.map((item) => {
+        return {
+          display_order: item.display_order,
+          question_text: item.question_text,
+          score_0_text: item.score_0_text,
+          score_1_text: item.score_1_text,
+          score_3_text: item.score_3_text,
+          score_5_text: item.score_5_text,
+          price: item.price,
+          review_id: id,
+        };
+      });
+
+      await this.prisma.evaluationItem.createMany({
+        data: evaluationItems,
+      });
     }
 
     return {

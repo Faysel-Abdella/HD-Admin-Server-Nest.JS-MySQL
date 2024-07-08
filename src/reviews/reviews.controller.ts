@@ -212,6 +212,7 @@ export class ReviewsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
+    console.log('Update', updateReviewDto);
     return this.reviewsService.update(+id, updateReviewDto);
   }
 
