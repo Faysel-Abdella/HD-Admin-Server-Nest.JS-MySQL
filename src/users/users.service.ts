@@ -54,17 +54,12 @@ export class UsersService {
       where: {
         user_id: id,
       },
-      select: {
-        user_id: true,
-        username: true,
-        email: true,
-      },
     });
 
     if (!user) {
       return {
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'User not found',
+        message: 'User not found (Invalid id)',
       };
     }
 
