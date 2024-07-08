@@ -35,7 +35,6 @@ model Review {
   residenceYear          String
   comprehensiveOpinion   String
   residenceProofDocument String?
-  photos                 Json?
   rating                 Float
   usageFee               Float
   viewCount              Int      @default(0)

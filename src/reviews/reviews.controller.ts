@@ -24,12 +24,13 @@ import {
   addressOption,
   usernameOption,
 } from '../utils/queryOptions';
+import { Exclude } from 'class-transformer';
 
-@Controller('admin/reviews')
+@Controller()
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  @Post()
+  @Post('add-review')
   @UseInterceptors(FilesInterceptor('photos', 10))
   create(
     @Body() createReviewDto: CreateReviewDto,
@@ -43,7 +44,7 @@ export class ReviewsController {
     return this.reviewsService.create(createReviewDto, photos);
   }
 
-  @Get()
+  @Get('admin/reviews')
   @ApiQuery(sortOrderOption)
   @ApiQuery(sortByQueryOption)
   @ApiQuery(pageOption)
@@ -57,6 +58,7 @@ export class ReviewsController {
     @Query('sortOrder') sortOrder?: string,
     @Query('address') address?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findAll(
       +page,
@@ -65,6 +67,7 @@ export class ReviewsController {
       sortOrder,
       address,
       username,
+      sigungu,
     );
   }
 
@@ -73,13 +76,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('new-registration-verification-review')
+  @Get('admin/reviews/new-registration-verification-review')
   findNewRegistrationVerificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findNewRegistrationVerificationReview(
       +page,
@@ -87,6 +91,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
@@ -95,13 +100,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('new-registration-un-verification-review')
+  @Get('admin/reviews/new-registration-un-verification-review')
   findNewRegistrationUnVerificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findNewRegistrationUnVerificationReview(
       +page,
@@ -109,6 +115,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
@@ -117,13 +124,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('certification-review')
+  @Get('admin/reviews/certification-review')
   findCertificationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findCertificationReview(
       +page,
@@ -131,6 +139,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
@@ -139,13 +148,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('unverified-review')
+  @Get('admin/reviews/unverified-review')
   findUnverifiedReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findUnverifiedReview(
       +page,
@@ -153,6 +163,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
@@ -161,13 +172,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('pet-review')
+  @Get('admin/reviews/pet-review')
   findPetReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findPetReview(
       +page,
@@ -175,6 +187,7 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
@@ -183,13 +196,14 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
-  @Get('re-registration-review')
+  @Get('admin/reviews/re-registration-review')
   findReRegistrationReview(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
     @Query('username') username?: string,
+    @Query('sigungu') sigungu?: string,
   ) {
     return this.reviewsService.findReRegistrationReview(
       +page,
@@ -197,20 +211,21 @@ export class ReviewsController {
       sortBy,
       sortOrder,
       username,
+      sigungu,
     );
   }
 
-  @Get(':id')
+  @Get('admin/reviews/:id')
   findOne(@Param('id') id: string) {
     return this.reviewsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('admin/reviews/:id')
   update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
     return this.reviewsService.update(+id, updateReviewDto);
   }
 
-  @Delete(':id')
+  @Delete('admin/reviews/:id')
   remove(@Param('id') id: string) {
     return this.reviewsService.remove(+id);
   }

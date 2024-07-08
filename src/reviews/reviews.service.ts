@@ -199,6 +199,7 @@ export class ReviewsService {
     sortOrder?: string,
     address?: string,
     username?: string,
+    sigungu?: string,
   ) {
     const skip = page ? (page - 1) * limit : 0;
 
@@ -233,9 +234,14 @@ export class ReviewsService {
           address: {
             contains: address ? address.toLowerCase() : undefined,
           },
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           status: address ? 'APPROVED' : undefined,
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
       });
@@ -260,6 +266,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     //  "신규등록 인증후기" === residenceProofDocument not null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
@@ -281,8 +288,13 @@ export class ReviewsService {
         where: {
           residenceProofDocument: { not: null },
           status: 'WAITING',
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
@@ -321,6 +333,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     // "신규등록 미인증후기" === residenceProofDocument null & status === waiting
     const skip = page ? (page - 1) * limit : 0;
@@ -342,8 +355,13 @@ export class ReviewsService {
         where: {
           residenceProofDocument: null,
           status: 'WAITING',
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
@@ -382,6 +400,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     // "인증후기" === residenceProofDocument not null & status === approved
     const skip = page ? (page - 1) * limit : 0;
@@ -403,8 +422,13 @@ export class ReviewsService {
         where: {
           residenceProofDocument: { not: null },
           status: 'APPROVED',
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
@@ -443,6 +467,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     // "미인증후기" === residenceProofDocument null & status === approved
     const skip = page ? (page - 1) * limit : 0;
@@ -464,8 +489,13 @@ export class ReviewsService {
         where: {
           residenceProofDocument: null,
           status: 'APPROVED',
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
@@ -503,6 +533,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     // '반려후기' === status === rejected;
     const skip = page ? (page - 1) * limit : 0;
@@ -523,8 +554,13 @@ export class ReviewsService {
       const reviews = await this.prisma.review.findMany({
         where: {
           status: 'REJECTED',
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
@@ -562,6 +598,7 @@ export class ReviewsService {
     sortBy?: string,
     sortOrder?: string,
     username?: string,
+    sigungu?: string,
   ) {
     // "재등록 후기" === status === waiting_for_update' | 'waiting_for_residence_verification' | 'waiting_after_rejection'
     const skip = page ? (page - 1) * limit : 0;
@@ -588,8 +625,13 @@ export class ReviewsService {
               'WAITING_AFTER_REJECTION',
             ],
           },
+          sigungu: {
+            contains: sigungu ? sigungu.toLowerCase() : undefined,
+          },
           User: {
-            username: username ? username.toLowerCase() : undefined,
+            username: {
+              contains: username ? username.toLowerCase() : undefined,
+            },
           },
         },
         skip: skip,
