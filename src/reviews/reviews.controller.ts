@@ -11,6 +11,12 @@ import {
   UploadedFiles,
   BadRequestException,
 } from '@nestjs/common';
+import {
+  ApiProperty,
+  ApiQueryOptions,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -35,6 +41,32 @@ export class ReviewsController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'sortOrder',
+    enum: ['asc', 'desc'],
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    enum: ['rating', 'usageFee', 'viewCount'],
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'address',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'username',
+    required: false,
+  })
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
