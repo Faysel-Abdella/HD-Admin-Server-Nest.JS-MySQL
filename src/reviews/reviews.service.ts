@@ -581,35 +581,47 @@ export class ReviewsService {
   }
 
   async update(id: number, updateReviewDto: UpdateReviewDto) {
-    const { data } = await this.findOne(id);
-    const updatedReview = await this.prisma.review.update({
+    const updatedReview = await this.prisma.review.findUnique({
+      where: { review_id: id },
+    });
+
+    if (!updatedReview) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Review not found (Invalid Id)',
+      };
+    }
+
+    await this.prisma.review.update({
       where: { review_id: id },
       data: {
-        address: updateReviewDto.address || data.address,
+        address: updateReviewDto.address || updatedReview.address,
 
-        sigungu: updateReviewDto.sigungu || data.sigungu,
+        sigungu: updateReviewDto.sigungu || updatedReview.sigungu,
 
         detailed_address:
-          updateReviewDto.detailed_address || data.detailed_address,
+          updateReviewDto.detailed_address || updatedReview.detailed_address,
 
-        residence_year: updateReviewDto.residence_year || data.residence_year,
+        residence_year:
+          updateReviewDto.residence_year || updatedReview.residence_year,
 
         comprehensive_opinion:
-          updateReviewDto.comprehensive_opinion || data.comprehensive_opinion,
+          updateReviewDto.comprehensive_opinion ||
+          updatedReview.comprehensive_opinion,
 
-        rating: updateReviewDto.rating || data.rating,
+        rating: updateReviewDto.rating || updatedReview.rating,
 
-        usage_fee: updateReviewDto.usage_fee || data.usage_fee,
+        usage_fee: updateReviewDto.usage_fee || updatedReview.usage_fee,
 
         residence_proof_document:
           updateReviewDto.residence_proof_document ||
-          data.residence_proof_document,
+          updatedReview.residence_proof_document,
 
-        is_exposed: updateReviewDto.is_exposed || data.is_exposed,
+        is_exposed: updateReviewDto.is_exposed || updatedReview.is_exposed,
 
-        view_count: updateReviewDto.view_count || data.view_count,
+        view_count: updateReviewDto.view_count || updatedReview.view_count,
 
-        status: updateReviewDto.status || data.status,
+        status: updateReviewDto.status || updatedReview.status,
       },
     });
 
@@ -655,7 +667,17 @@ export class ReviewsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const deletedReview = await this.prisma.review.findUnique({
+      where: { review_id: id },
+    });
+
+    if (!deletedReview) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Review not found (Invalid Id)',
+      };
+    }
+
     const review = await this.prisma.review.delete({
       where: { review_id: id },
     });
