@@ -53,12 +53,21 @@ export class CommentsService {
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
-    const { data } = await this.findOne(id);
+    const updatedComment = await this.prisma.comment.findUnique({
+      where: { comment_id: id },
+    });
+
+    if (!updatedComment) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Comment not found (Invalid Id)',
+      };
+    }
 
     const comment = await this.prisma.comment.update({
       where: { comment_id: id },
       data: {
-        ...data,
+        ...updatedComment,
         ...updateCommentDto,
       },
     });
@@ -71,7 +80,16 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const deleted = await this.prisma.comment.findUnique({
+      where: { comment_id: id },
+    });
+
+    if (!deleted) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Comment not found (Invalid Id)',
+      };
+    }
 
     const comment = await this.prisma.comment.delete({
       where: { comment_id: id },
