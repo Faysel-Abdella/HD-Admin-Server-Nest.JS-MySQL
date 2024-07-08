@@ -150,7 +150,7 @@ export class ReviewsService {
           sigungu: {
             contains: sigungu ? sigungu.toLowerCase() : undefined,
           },
-          status: address ? 'APPROVED' : undefined,
+          status: 'APPROVED',
           User: {
             username: {
               contains: username ? username.toLowerCase() : undefined,
