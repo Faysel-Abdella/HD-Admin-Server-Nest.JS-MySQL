@@ -38,6 +38,7 @@ export class CommentsService {
         data: comment,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -65,6 +66,7 @@ export class CommentsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -92,6 +94,7 @@ export class CommentsService {
         data: comment,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -128,6 +131,7 @@ export class CommentsService {
         data: comment,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -158,6 +162,7 @@ export class CommentsService {
         data: comment,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,

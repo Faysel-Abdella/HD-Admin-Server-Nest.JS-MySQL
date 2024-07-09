@@ -29,7 +29,7 @@ export class UpdateCommentDto {
 
   @ApiProperty({ description: 'Whether the comment is exposed', example: true })
   @IsBoolean()
-  isExposed: boolean;
+  isExposed: string;
 
   @ApiProperty({
     description: 'The date the admin processed the comment',

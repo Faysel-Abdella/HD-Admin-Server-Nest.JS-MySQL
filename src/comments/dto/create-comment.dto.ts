@@ -1,5 +1,6 @@
 // comment.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsInt,
   IsString,
@@ -11,7 +12,7 @@ import {
 export class CreateCommentDto {
   @ApiProperty({
     description: 'The ID of the associated review',
-    example: 18,
+    example: 1,
     required: true,
   })
   @IsInt()
@@ -19,7 +20,7 @@ export class CreateCommentDto {
 
   @ApiProperty({
     description: 'The ID of the user who made the comment',
-    example: 7,
+    example: 1,
     required: true,
   })
   @IsInt()
@@ -42,9 +43,13 @@ export class CreateCommentDto {
   @IsString()
   comment: string;
 
-  @ApiProperty({ description: 'Whether the comment is exposed', example: true })
+  @ApiProperty({
+    description: 'Whether the comment is exposed',
+    example: 'true',
+  })
   @IsBoolean()
-  isExposed: boolean;
+  @Transform(({ value }) => value.toLowerCase() === 'true')
+  isExposed: string;
 
   @ApiProperty({
     description: 'The date the admin processed the comment',
