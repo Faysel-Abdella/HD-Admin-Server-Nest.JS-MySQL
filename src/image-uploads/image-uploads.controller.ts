@@ -38,6 +38,7 @@ export class ImageUploadsController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images', 10))
   update(
     @Param('id') id: string,
     @Body() updateImageUploadDto: UpdateImageUploadDto,

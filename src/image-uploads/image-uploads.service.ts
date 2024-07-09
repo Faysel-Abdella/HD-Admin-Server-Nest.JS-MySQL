@@ -43,7 +43,7 @@ export class ImageUploadsService {
       } else {
         return {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: 'No photos uploaded',
+          message: 'No photos is provided ',
         };
       }
     } catch (error) {
@@ -100,26 +100,39 @@ export class ImageUploadsService {
     }
   }
 
-  update(
+  async update(
     id: number,
     updateImageUploadDto: UpdateImageUploadDto,
     images: Express.Multer.File[],
   ) {
     try {
+      const updatedImage = await this.prisma.image.findUnique({
+        where: { imageId: id },
+      });
+
+      if (!updatedImage) {
+        return {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Image not found (Invalid Id)',
+        };
+      }
+
       if (images && images.length > 0) {
         console.log('UPLOADING STARTED');
 
-        const uploadedImages = images.map(async (photo) => {
-          const photoUrl = await this.FileUploadService.uploadPhoto(photo);
-          const updatedImage = await this.prisma.image.update({
-            where: { imageId: id },
-            data: {
-              imageUrl: photoUrl,
-              isExposed: updateImageUploadDto.isExposed,
-            },
-          });
-          return updatedImage;
-        });
+        const uploadedImages = await Promise.all(
+          images.map(async (photo) => {
+            const photoUrl = await this.FileUploadService.uploadPhoto(photo);
+            const updatedImage = await this.prisma.image.update({
+              where: { imageId: id },
+              data: {
+                imageUrl: photoUrl,
+                isExposed: updateImageUploadDto.isExposed,
+              },
+            });
+            return updatedImage;
+          }),
+        );
 
         return {
           statusCode: HttpStatus.OK,
@@ -129,10 +142,11 @@ export class ImageUploadsService {
       } else {
         return {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: 'No photos uploaded',
+          message: 'No photos is provided ',
         };
       }
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
