@@ -29,7 +29,7 @@ model Admin {
 model Review {
   reviewId               Int      @id @default(autoincrement())
   userId                 Int
-  // ######   we will create a review using only the below three pieces of data
+  // ###### we will create a review using only the below three pieces of data
   address                String  
   detailedAddress        String
   residenceYear          String
@@ -39,6 +39,14 @@ model Review {
   residenceProofDocument String?
   rating                 Float?
   usageFee               Float?
+  reviewEvaluationItems  Json?  // {
+                                // "reviewItems": [ 
+                                // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] }, 
+                                // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] }, 
+                                // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] }, 
+                                // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] }, 
+                                //              ]
+                                // }
   viewCount              Int      @default(0)
   status                 Status   @default(DRAFT)
   isExposed              Boolean  @default(true)
@@ -46,7 +54,6 @@ model Review {
 
   User           User?            @relation(fields: [userId], references: [userId])
   Comment        Comment[]
-  EvaluationItem EvaluationItem[]
   Image          Image[]
 }
 
@@ -84,16 +91,13 @@ model EvaluationItem {
   reviewId     Int
   displayOrder Int
   questionText String
-  detailedDescription String
   score0Text   String
   score1Text   String
   score3Text   String
   score5Text   String
   selectedScore Int? 
   price        Float
-  review       Review? @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
 }
-
 
 enum Status {
   DRAFT
@@ -104,3 +108,7 @@ enum Status {
   WAITING_FOR_RESIDENCE_VERIFICATION
   WAITING_AFTER_REJECTION
 }
+
+// evaluationItems   {selectedScore: Int,
+                  // detailedDescription: String, 
+                  // evaluationItem: EvaluationItem }[]

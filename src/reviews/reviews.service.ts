@@ -639,26 +639,44 @@ export class ReviewsService {
         },
       });
 
-      if (updateReviewDto.evaluationItems) {
-        await this.prisma.evaluationItem.deleteMany({
-          where: { reviewId: id },
-        });
-        const evaluationItems = updateReviewDto.evaluationItems.map((item) => {
-          return {
-            displayOrder: item.displayOrder,
-            questionText: item.questionText,
-            detailedDescription: item.detailedDescription,
-            score0Text: item.score0Text,
-            score1Text: item.score1Text,
-            score3Text: item.score3Text,
-            score5Text: item.score5Text,
-            price: item.price,
-            reviewId: id,
-          };
-        });
+      if (
+        updateReviewDto.evaluationItems &&
+        updateReviewDto.evaluationItems.length > 0
+      ) {
+        const formattedEvaluationItems = updateReviewDto.evaluationItems.map(
+          // {
+          // "reviewItems": [
+          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
+          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
+          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
+          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
+          //              ]
+          // }
+          (item) => {
+            const items = item.items.map((i) => {
+              return {
+                displayOrder: i.displayOrder,
+                questionText: i.questionText,
+                score0Text: i.score0Text,
+                score1Text: i.score1Text,
+                score3Text: i.score3Text,
+                score5Text: i.score5Text,
+                price: i.price,
+              };
+            });
+            return {
+              selectedScore: item.selectedScore,
+              detailedDescription: item.detailedDescription,
+              items: items,
+            };
+          },
+        );
 
-        await this.prisma.evaluationItem.createMany({
-          data: evaluationItems,
+        await this.prisma.review.update({
+          where: { reviewId: id },
+          data: {
+            reviewEvaluationItems: { reviewItems: formattedEvaluationItems },
+          },
         });
       }
 
@@ -674,6 +692,11 @@ export class ReviewsService {
                 userId: true,
                 username: true,
                 email: true,
+              },
+            },
+            Image: {
+              select: {
+                imageId: true,
               },
             },
           },

@@ -31,14 +31,6 @@ class EvaluationItemDto {
   @ApiProperty({
     required: true,
     type: 'string',
-    description: 'Detail description of the item',
-    example: 'This item is designed for .............',
-  })
-  detailedDescription: string;
-
-  @ApiProperty({
-    required: true,
-    type: 'string',
     description: 'Score 0 text',
     example: 'Score 0',
   })
@@ -80,6 +72,55 @@ class EvaluationItemDto {
   })
   @IsNumber()
   price: number;
+}
+
+class reviewEvaluationItemDto {
+  @ApiProperty({
+    name: 'selectedScore',
+    required: true,
+    type: 'number',
+    description: ' selected score',
+    example: 1,
+  })
+  @IsNotEmpty()
+  selectedScore: number;
+
+  @ApiProperty({
+    name: 'detailedDescription',
+    required: true,
+    type: 'string',
+    description: 'detailed description',
+    example: 1,
+  })
+  detailedDescription: string;
+
+  @ApiProperty({
+    name: 'item',
+    required: true,
+    type: 'array',
+    description: 'array of evaluation items',
+    example: [
+      {
+        displayOrder: 1,
+        questionText: 'Question 1',
+        score0Text: 'Score 0',
+        score1Text: 'Score 1',
+        score3Text: 'Score 3',
+        score5Text: 'Score 5',
+        price: 100,
+      },
+      {
+        displayOrder: 2,
+        questionText: 'Question 2',
+        score0Text: 'Score 0',
+        score1Text: 'Score 1',
+        score3Text: 'Score 3',
+        score5Text: 'Score 5',
+        price: 200,
+      },
+    ],
+  })
+  items: EvaluationItemDto[];
 }
 
 export class CreateReviewDto {
@@ -232,7 +273,6 @@ export class CreateReviewDto {
       {
         displayOrder: 1,
         questionText: 'Question 1',
-        detailedDescription: 'This is the detail',
         score0Text: 'Score 0',
         score1Text: 'Score 1',
         score3Text: 'Score 3',
@@ -242,7 +282,6 @@ export class CreateReviewDto {
       {
         displayOrder: 2,
         questionText: 'Question 2',
-        detailedDescription: 'This is the detail',
         score0Text: 'Score 0',
         score1Text: 'Score 1',
         score3Text: 'Score 3',
@@ -254,5 +293,5 @@ export class CreateReviewDto {
   @IsArray()
   @ValidateNested({ each: true })
   @IsOptional()
-  evaluationItems?: EvaluationItemDto[];
+  evaluationItems?: reviewEvaluationItemDto[];
 }
