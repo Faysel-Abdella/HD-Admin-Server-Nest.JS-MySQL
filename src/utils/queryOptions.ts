@@ -29,3 +29,8 @@ export const usernameOption = {
   name: 'username',
   required: false,
 };
+
+export const sigunguOption = {
+  name: 'sigungu',
+  required: false,
+};

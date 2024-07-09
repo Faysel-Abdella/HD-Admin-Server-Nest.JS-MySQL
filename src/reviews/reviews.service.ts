@@ -51,27 +51,6 @@ export class ReviewsService {
       });
 
       const reviewId = review.reviewId;
-      const evaluationItemsInput = createReviewDto.evaluationItems;
-
-      if (evaluationItemsInput && evaluationItemsInput.length > 0) {
-        const evaluationItems = evaluationItemsInput.map((item) => {
-          return {
-            displayOrder: item.displayOrder,
-            questionText: item.questionText,
-            detailedDescription: item.detailedDescription,
-            score0Text: item.score0Text,
-            score1Text: item.score1Text,
-            score3Text: item.score3Text,
-            score5Text: item.score5Text,
-            price: item.price,
-            reviewId: reviewId,
-          };
-        });
-
-        await this.prisma.evaluationItem.createMany({
-          data: evaluationItems,
-        });
-      }
 
       const createdReview = await this.prisma.review.findUnique({
         where: { reviewId: reviewId },
@@ -150,7 +129,7 @@ export class ReviewsService {
           sigungu: {
             contains: sigungu ? sigungu.toLowerCase() : undefined,
           },
-          status: 'APPROVED',
+          status: 'APPROVED', // Get only approved reviews
           User: {
             username: {
               contains: username ? username.toLowerCase() : undefined,

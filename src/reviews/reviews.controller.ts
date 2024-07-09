@@ -23,6 +23,7 @@ import {
   limitOption,
   addressOption,
   usernameOption,
+  sigunguOption,
 } from '../utils/queryOptions';
 import { Exclude } from 'class-transformer';
 
@@ -42,6 +43,7 @@ export class ReviewsController {
   @ApiQuery(limitOption)
   @ApiQuery(addressOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -67,6 +69,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/new-registration-verification-review')
   findNewRegistrationVerificationReview(
     @Query('page') page?: number,
@@ -91,6 +94,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/new-registration-un-verification-review')
   findNewRegistrationUnVerificationReview(
     @Query('page') page?: number,
@@ -115,6 +119,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/certification-review')
   findCertificationReview(
     @Query('page') page?: number,
@@ -139,6 +144,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/unverified-review')
   findUnverifiedReview(
     @Query('page') page?: number,
@@ -163,6 +169,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/pet-review')
   findPetReview(
     @Query('page') page?: number,
@@ -187,6 +194,7 @@ export class ReviewsController {
   @ApiQuery(pageOption)
   @ApiQuery(limitOption)
   @ApiQuery(usernameOption)
+  @ApiQuery(sigunguOption)
   @Get('admin/reviews/re-registration-review')
   findReRegistrationReview(
     @Query('page') page?: number,
