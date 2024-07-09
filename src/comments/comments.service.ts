@@ -8,7 +8,10 @@ export class CommentsService {
   constructor(private readonly prisma: PrismaService) {}
 
   private transformBoolean(value: any) {
-    return value.toLowerCase() === 'true';
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+    return value;
   }
 
   async create(createCommentDto: CreateCommentDto) {

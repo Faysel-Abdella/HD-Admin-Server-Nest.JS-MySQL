@@ -13,7 +13,10 @@ export class ImageUploadsService {
   ) {}
 
   private transformBoolean(value: any) {
-    return value.toLowerCase() === 'true';
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+    return value;
   }
 
   async create(
@@ -113,11 +116,11 @@ export class ImageUploadsService {
     images: Express.Multer.File[],
   ) {
     try {
-      const updatedImage = await this.prisma.image.findUnique({
+      const updatedData = await this.prisma.image.findUnique({
         where: { imageId: id },
       });
 
-      if (!updatedImage) {
+      if (!updatedData) {
         return {
           statusCode: HttpStatus.NOT_FOUND,
           message: 'Image not found (Invalid Id)',
@@ -134,9 +137,9 @@ export class ImageUploadsService {
               where: { imageId: id },
               data: {
                 imageUrl: photoUrl,
-                isExposed: this.transformBoolean(
-                  updateImageUploadDto.isExposed,
-                ),
+                isExposed: updateImageUploadDto.isExposed
+                  ? this.transformBoolean(updateImageUploadDto.isExposed)
+                  : updatedData.isExposed,
               },
             });
             return updatedImage;

@@ -28,7 +28,6 @@ export class UpdateCommentDto {
   comment: string;
 
   @ApiProperty({ description: 'Whether the comment is exposed', example: true })
-  @IsBoolean()
   isExposed: string;
 
   @ApiProperty({

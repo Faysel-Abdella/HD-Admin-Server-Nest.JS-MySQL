@@ -47,9 +47,12 @@ export class CreateCommentDto {
     description: 'Whether the comment is exposed',
     example: 'true',
   })
-  @IsBoolean()
-  @Transform(({ value }) => value.toLowerCase() === 'true')
-  isExposed: string;
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+  })
+  isExposed: boolean | string;
 
   @ApiProperty({
     description: 'The date the admin processed the comment',

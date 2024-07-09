@@ -20,8 +20,11 @@ export class UpdateImageUploadDto {
     description: 'Is the image exposed to the public?',
     example: true,
   })
-  @IsBoolean()
   @IsOptional()
-  @Transform(({ value }) => value.toLowerCase() === 'true')
-  isExposed?: boolean;
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+  })
+  isExposed?: boolean | string;
 }
