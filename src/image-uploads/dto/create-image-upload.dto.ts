@@ -9,6 +9,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { Transform } from 'class-transformer';
+
 export class CreateImageUploadDto {
   @ApiProperty({
     required: true,
@@ -55,5 +57,6 @@ export class CreateImageUploadDto {
   })
   @IsBoolean()
   @IsOptional()
-  isExposed?: boolean;
+  @Transform(({ value }) => value.toLowerCase() === 'true')
+  isExposed?: boolean; // boolean string 'true' or 'false'
 }

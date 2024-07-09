@@ -3,6 +3,7 @@ import { CreateImageUploadDto } from './dto/create-image-upload.dto';
 import { UpdateImageUploadDto } from './dto/update-image-upload.dto';
 import { FileUploadService } from '../utils/image-upload/upload.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Transform } from 'class-transformer';
 
 @Injectable()
 export class ImageUploadsService {
@@ -10,6 +11,10 @@ export class ImageUploadsService {
     private readonly prisma: PrismaService,
     private readonly FileUploadService: FileUploadService,
   ) {}
+
+  private transformBoolean(value: any) {
+    return value.toLowerCase() === 'true';
+  }
 
   async create(
     createImageUploadDto: CreateImageUploadDto,
@@ -28,7 +33,9 @@ export class ImageUploadsService {
                 userId: +createImageUploadDto.userId,
                 adminId: +createImageUploadDto.adminId,
                 imageUrl: photoUrl,
-                isExposed: createImageUploadDto.isExposed,
+                isExposed: this.transformBoolean(
+                  createImageUploadDto.isExposed,
+                ),
               },
             });
             return uploadedImage;
@@ -105,6 +112,7 @@ export class ImageUploadsService {
     updateImageUploadDto: UpdateImageUploadDto,
     images: Express.Multer.File[],
   ) {
+    console.log(updateImageUploadDto);
     try {
       const updatedImage = await this.prisma.image.findUnique({
         where: { imageId: id },
@@ -127,7 +135,9 @@ export class ImageUploadsService {
               where: { imageId: id },
               data: {
                 imageUrl: photoUrl,
-                isExposed: updateImageUploadDto.isExposed,
+                isExposed: this.transformBoolean(
+                  updateImageUploadDto.isExposed,
+                ),
               },
             });
             return updatedImage;
