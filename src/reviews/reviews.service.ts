@@ -55,7 +55,7 @@ export class ReviewsService {
       const createdReview = await this.prisma.review.findUnique({
         where: { reviewId: reviewId },
         include: {
-          EvaluationItem: true,
+          EvaluationItem: false,
           User: {
             select: {
               userId: true,
