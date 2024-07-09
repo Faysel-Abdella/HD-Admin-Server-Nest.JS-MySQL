@@ -58,5 +58,5 @@ export class CreateImageUploadDto {
   @IsBoolean()
   @IsOptional()
   @Transform(({ value }) => value.toLowerCase() === 'true')
-  isExposed?: boolean; // boolean string 'true' or 'false'
+  isExposed?: boolean;
 }
