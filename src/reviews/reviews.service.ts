@@ -69,45 +69,66 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
+            },
+            Image: {
+              select: {
+                imageId: true,
+              },
             },
           },
-          Image: {
-            select: {
-              imageId: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy, // { property: 'asc' | 'desc' }
+          where: {
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            status: 'APPROVED', // Get only approved reviews
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy, // { property: 'asc' | 'desc' }
-        where: {
-          address: {
-            contains: address ? address.toLowerCase() : undefined,
-          },
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          status: 'APPROVED', // Get only approved reviews
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+        }),
+
+        this.prisma.review.count({
+          where: {
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            status: 'APPROVED', // Get only approved reviews
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-      });
+        }),
+      ]);
+
+      // const reviews = await
       return {
         statusCode: HttpStatus.OK,
         message: 'Reviews retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -124,6 +145,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -142,39 +164,62 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          residenceProofDocument: { not: null },
-          status: 'WAITING',
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            residenceProofDocument: { not: null },
+            status: 'WAITING',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            residenceProofDocument: { not: null },
+            status: 'WAITING',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -191,6 +236,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -209,39 +255,62 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          residenceProofDocument: null,
-          status: 'WAITING',
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            residenceProofDocument: null,
+            status: 'WAITING',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            residenceProofDocument: null,
+            status: 'WAITING',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -258,6 +327,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -276,39 +346,62 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          residenceProofDocument: { not: null },
-          status: 'APPROVED',
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            residenceProofDocument: { not: null },
+            status: 'APPROVED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            residenceProofDocument: { not: null },
+            status: 'APPROVED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -325,6 +418,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -343,38 +437,62 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          residenceProofDocument: null,
-          status: 'APPROVED',
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            residenceProofDocument: null,
+            status: 'APPROVED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            residenceProofDocument: null,
+            status: 'APPROVED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -391,6 +509,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -409,37 +528,60 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          status: 'REJECTED',
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            status: 'REJECTED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            status: 'REJECTED',
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
@@ -456,6 +598,7 @@ export class ReviewsService {
     limit?: number,
     sortBy?: string,
     sortOrder?: string,
+    address?: string,
     username?: string,
     sigungu?: string,
   ) {
@@ -474,44 +617,72 @@ export class ReviewsService {
       orderBy.registrationDate = sortOrder === 'asc' ? 'asc' : 'desc';
     }
 
+    const addressCondition = {
+      contains: address ? address.toLowerCase() : undefined,
+    };
+
+    const sigunguCondition = {
+      contains: sigungu ? sigungu.toLowerCase() : undefined,
+    };
+
+    const usernameCondition = {
+      contains: username ? username.toLowerCase() : undefined,
+    };
+
     try {
-      const reviews = await this.prisma.review.findMany({
-        where: {
-          status: {
-            in: [
-              'WAITING_FOR_UPDATE',
-              'WAITING_FOR_RESIDENCE_VERIFICATION',
-              'WAITING_AFTER_REJECTION',
-            ],
-          },
-          sigungu: {
-            contains: sigungu ? sigungu.toLowerCase() : undefined,
-          },
-          User: {
-            username: {
-              contains: username ? username.toLowerCase() : undefined,
+      const [reviews, totalData] = await Promise.all([
+        this.prisma.review.findMany({
+          where: {
+            status: {
+              in: [
+                'WAITING_FOR_UPDATE',
+                'WAITING_FOR_RESIDENCE_VERIFICATION',
+                'WAITING_AFTER_REJECTION',
+              ],
+            },
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
             },
           },
-        },
-        skip: skip,
-        ...(limit && { take: limit }),
-        orderBy: orderBy,
-        include: {
-          User: {
-            select: {
-              userId: true,
-              username: true,
-              email: true,
+          skip: skip,
+          ...(limit && { take: limit }),
+          orderBy: orderBy,
+          include: {
+            User: {
+              select: {
+                userId: true,
+                username: true,
+                email: true,
+              },
             },
           },
-        },
-      });
+        }),
+
+        this.prisma.review.count({
+          where: {
+            status: {
+              in: [
+                'WAITING_FOR_UPDATE',
+                'WAITING_FOR_RESIDENCE_VERIFICATION',
+                'WAITING_AFTER_REJECTION',
+              ],
+            },
+            address: addressCondition,
+            sigungu: sigunguCondition,
+            User: {
+              username: usernameCondition,
+            },
+          },
+        }),
+      ]);
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Review retrieved successfully',
         data: reviews,
-        totalData: reviews.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
