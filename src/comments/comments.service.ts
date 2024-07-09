@@ -42,16 +42,19 @@ export class CommentsService {
     const skip = page ? (page - 1) * limit : 0;
 
     try {
-      const comments = await this.prisma.comment.findMany({
-        skip: skip,
-        ...(limit && { take: limit }),
-      });
+      const [comments, totalData] = await Promise.all([
+        this.prisma.comment.findMany({
+          skip: skip,
+          ...(limit && { take: limit }),
+        }),
+        this.prisma.comment.count(),
+      ]);
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Comments retrieved successfully',
         data: comments,
-        totalData: comments.length,
+        totalData: totalData,
         page: page ? page : 1,
       };
     } catch (error) {
