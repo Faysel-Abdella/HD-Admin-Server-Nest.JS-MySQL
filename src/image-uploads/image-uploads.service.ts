@@ -100,8 +100,44 @@ export class ImageUploadsService {
     }
   }
 
-  update(id: number, updateImageUploadDto: UpdateImageUploadDto) {
-    return `This action updates a #${id} imageUpload`;
+  update(
+    id: number,
+    updateImageUploadDto: UpdateImageUploadDto,
+    images: Express.Multer.File[],
+  ) {
+    try {
+      if (images && images.length > 0) {
+        console.log('UPLOADING STARTED');
+
+        const uploadedImages = images.map(async (photo) => {
+          const photoUrl = await this.FileUploadService.uploadPhoto(photo);
+          const updatedImage = await this.prisma.image.update({
+            where: { imageId: id },
+            data: {
+              imageUrl: photoUrl,
+              isExposed: updateImageUploadDto.isExposed,
+            },
+          });
+          return updatedImage;
+        });
+
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Photo updated successfully',
+          data: uploadedImages,
+        };
+      } else {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'No photos uploaded',
+        };
+      }
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   remove(id: number) {

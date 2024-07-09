@@ -109,6 +109,7 @@ enum Status {
   WAITING_AFTER_REJECTION
 }
 
+
 // evaluationItems   {selectedScore: Int,
                   // detailedDescription: String, 
-                  // evaluationItem: EvaluationItem }[]
+                  // evaluationItem: EvaluationItem }[]                  

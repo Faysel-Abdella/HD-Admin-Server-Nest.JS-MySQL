@@ -41,8 +41,9 @@ export class ImageUploadsController {
   update(
     @Param('id') id: string,
     @Body() updateImageUploadDto: UpdateImageUploadDto,
+    @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.imageUploadsService.update(+id, updateImageUploadDto);
+    return this.imageUploadsService.update(+id, updateImageUploadDto, images);
   }
 
   @Delete(':id')
