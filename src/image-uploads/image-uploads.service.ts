@@ -112,7 +112,6 @@ export class ImageUploadsService {
     updateImageUploadDto: UpdateImageUploadDto,
     images: Express.Multer.File[],
   ) {
-    console.log(updateImageUploadDto);
     try {
       const updatedImage = await this.prisma.image.findUnique({
         where: { imageId: id },
