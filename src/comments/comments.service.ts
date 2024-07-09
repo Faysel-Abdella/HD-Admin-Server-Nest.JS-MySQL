@@ -7,6 +7,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CommentsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private transformBoolean(value: any) {
+    return value.toLowerCase() === 'true';
+  }
+
   async create(createCommentDto: CreateCommentDto) {
     const review = await this.prisma.review.findUnique({
       where: { reviewId: createCommentDto.reviewId },
@@ -22,7 +26,10 @@ export class CommentsService {
 
     try {
       const comment = await this.prisma.comment.create({
-        data: createCommentDto,
+        data: {
+          ...createCommentDto,
+          isExposed: this.transformBoolean(createCommentDto.isExposed),
+        },
       });
 
       return {
@@ -109,6 +116,9 @@ export class CommentsService {
         data: {
           ...updatedComment,
           ...updateCommentDto,
+          isExposed: updateCommentDto.isExposed
+            ? this.transformBoolean(updateCommentDto.isExposed)
+            : updatedComment.isExposed,
         },
       });
 
