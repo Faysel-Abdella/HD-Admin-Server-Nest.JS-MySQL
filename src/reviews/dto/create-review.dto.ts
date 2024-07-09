@@ -228,8 +228,28 @@ export class CreateReviewDto {
     required: true,
     type: 'array',
     description: 'Array of evaluation items',
-    example:
-      '[ { "display_order": 1, "question_text": "Question 1", "score_0_text": "Score 0", "score_1_text": "Score 1", "score_3_text": "Score 3", "score_5_text": "Score 5", "price": 100 }, { "display_order": 2, "question_text": "Question 2", "score_0_text": "Score 0", "score_1_text": "Score 1", "score_3_text": "Score 3", "score_5_text": "Score 5", "price": 200 } ]',
+    example: [
+      {
+        displayOrder: 1,
+        questionText: 'Question 1',
+        detailedDescription: 'This is the detail',
+        score0Text: 'Score 0',
+        score1Text: 'Score 1',
+        score3Text: 'Score 3',
+        score5Text: 'Score 5',
+        price: 100,
+      },
+      {
+        displayOrder: 2,
+        questionText: 'Question 2',
+        detailedDescription: 'This is the detail',
+        score0Text: 'Score 0',
+        score1Text: 'Score 1',
+        score3Text: 'Score 3',
+        score5Text: 'Score 5',
+        price: 200,
+      },
+    ],
   })
   @IsArray()
   @ValidateNested({ each: true })
