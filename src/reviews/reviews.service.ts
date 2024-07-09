@@ -55,7 +55,6 @@ export class ReviewsService {
       const createdReview = await this.prisma.review.findUnique({
         where: { reviewId: reviewId },
         include: {
-          EvaluationItem: false,
           User: {
             select: {
               userId: true,
@@ -72,6 +71,7 @@ export class ReviewsService {
         data: createdReview,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -105,7 +105,6 @@ export class ReviewsService {
     try {
       const reviews = await this.prisma.review.findMany({
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -145,6 +144,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -193,7 +193,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -212,6 +211,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -260,7 +260,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -279,6 +278,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -327,7 +327,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -346,6 +345,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -394,7 +394,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -412,6 +411,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -459,7 +459,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -477,6 +476,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -530,7 +530,6 @@ export class ReviewsService {
         ...(limit && { take: limit }),
         orderBy: orderBy,
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -549,6 +548,7 @@ export class ReviewsService {
         page: page ? page : 1,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -561,7 +561,6 @@ export class ReviewsService {
       const review = await this.prisma.review.findUnique({
         where: { reviewId: id },
         include: {
-          EvaluationItem: true,
           User: {
             select: {
               userId: true,
@@ -586,6 +585,7 @@ export class ReviewsService {
         data: review,
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -646,28 +646,25 @@ export class ReviewsService {
         const formattedEvaluationItems = updateReviewDto.evaluationItems.map(
           // {
           // "reviewItems": [
-          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
-          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
-          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
-          // {selectedScore: Int, detailedDescription: String, items: [{  }, { }, { } ] },
+          // {selectedScore: Int, detailedDescription: String, item: {  } },
+          // {selectedScore: Int, detailedDescription: String, item: {  } },
+          // {selectedScore: Int, detailedDescription: String, item: {  } },
+          // {selectedScore: Int, detailedDescription: String, item: {  } },
           //              ]
           // }
-          (item) => {
-            const items = item.items.map((i) => {
-              return {
-                displayOrder: i.displayOrder,
-                questionText: i.questionText,
-                score0Text: i.score0Text,
-                score1Text: i.score1Text,
-                score3Text: i.score3Text,
-                score5Text: i.score5Text,
-                price: i.price,
-              };
-            });
+          (evaluateItem) => {
             return {
-              selectedScore: item.selectedScore,
-              detailedDescription: item.detailedDescription,
-              items: items,
+              selectedScore: evaluateItem.selectedScore,
+              detailedDescription: evaluateItem.detailedDescription,
+              item: {
+                displayOrder: evaluateItem.item.displayOrder,
+                questionText: evaluateItem.item.questionText,
+                score0Text: evaluateItem.item.score0Text,
+                score1Text: evaluateItem.item.score1Text,
+                score3Text: evaluateItem.item.score3Text,
+                score5Text: evaluateItem.item.score5Text,
+                price: evaluateItem.item.price,
+              },
             };
           },
         );
@@ -686,7 +683,6 @@ export class ReviewsService {
         data: await this.prisma.review.findUnique({
           where: { reviewId: id },
           include: {
-            EvaluationItem: true,
             User: {
               select: {
                 userId: true,
@@ -703,6 +699,7 @@ export class ReviewsService {
         }),
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
@@ -732,6 +729,7 @@ export class ReviewsService {
         message: 'Review deleted successfully',
       };
     } catch (error) {
+      console.log(error.message);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message,
