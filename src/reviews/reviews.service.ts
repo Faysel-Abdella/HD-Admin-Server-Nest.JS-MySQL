@@ -11,39 +11,6 @@ export class ReviewsService {
     private readonly FileUploadService: FileUploadService,
   ) {}
 
-  // A typical post request body for adding a review - form-data
-  /*
-   {
-  "address": "Adama",
-  "sigungu": "test",
-  "userId": 1,
-  "rating": 2,
-  "usageFee": 30,
-  ....other fields
-  "photos": [file, file]
-  "evaluationItems": [
-    {
-      "displayOrder": 2,
-      "questionText": "text",
-      "score0Text": "0",
-      "score1Text": "1",
-      "score3Text": "3",
-      "score5Text": "5",
-      "price": 20
-    },
-     {
-      "displayOrder": 3,
-      "questionText": "text",
-      "score0Text": "0",
-      "score1Text": "1",
-      "score3Text": "3",
-      "score5Text": "5",
-      "price": 20
-    }
-    ]
-  }
-   */
-
   async create(createReviewDto: CreateReviewDto) {
     try {
       const review = await this.prisma.review.create({
