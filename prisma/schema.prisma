@@ -62,7 +62,7 @@ model Image {
   reviewId    Int
   userId      Int
   adminId     Int? 
-  images      Json
+  imageUrl    String
   isExposed   Boolean   @default(true)
   processedAt DateTime  @default(now())
  

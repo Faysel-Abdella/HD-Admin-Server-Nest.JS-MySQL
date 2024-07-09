@@ -18,27 +18,27 @@ export class ImageUploadsService {
     try {
       if (images && images.length > 0) {
         console.log('UPLOADING STARTED');
-        const uploadedData = await Promise.all(
+
+        const uploadedImages = await Promise.all(
           images.map(async (photo) => {
             const photoUrl = await this.FileUploadService.uploadPhoto(photo);
-            return { url: photoUrl };
+            const uploadedImage = await this.prisma.image.create({
+              data: {
+                reviewId: +createImageUploadDto.reviewId,
+                userId: +createImageUploadDto.userId,
+                adminId: +createImageUploadDto.adminId,
+                imageUrl: photoUrl,
+                isExposed: createImageUploadDto.isExposed,
+              },
+            });
+            return uploadedImage;
           }),
         );
-
-        const uploadedImage = await this.prisma.image.create({
-          data: {
-            reviewId: +createImageUploadDto.reviewId,
-            userId: +createImageUploadDto.userId,
-            adminId: +createImageUploadDto.adminId,
-            images: { imagesUrl: uploadedData },
-            isExposed: createImageUploadDto.isExposed,
-          },
-        });
 
         return {
           statusCode: HttpStatus.CREATED,
           message: 'Photos uploaded successfully',
-          data: uploadedImage,
+          data: uploadedImages,
         };
       } else {
         return {
